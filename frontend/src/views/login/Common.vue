@@ -3,7 +3,7 @@
     <div class="content" style="margin: 0 auto">
       <div class="top">
         <div class="header">
-          <span class="title" style="color: white">幼儿园管理系统</span>
+          <span class="title" style="color: white">小说创作阅读系统</span>
         </div>
         <div class="desc"></div>
       </div>

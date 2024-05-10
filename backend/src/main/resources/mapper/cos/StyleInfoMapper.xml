@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.cos.dao.StyleInfoMapper">
+
+    <!-- 分页获取阅读样式信息 -->
+    <select id="selectStylePage" resultType="java.util.LinkedHashMap">
+        select
+            id,
+            code,
+            name,
+            style_class,
+            create_date
+        from
+            style_info
+        where 1 = 1
+        <if test="styleInfo.name != null and styleInfo.name != ''">
+            AND name LIKE CONCAT('%',#{styleInfo.name},'%')
+        </if>
+        <if test="styleInfo.code != null and styleInfo.code != ''">
+            AND code LIKE CONCAT('%',#{styleInfo.code},'%')
+        </if>
+        order by create_date desc
+    </select>
+</mapper>

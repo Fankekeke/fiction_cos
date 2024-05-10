@@ -2,6 +2,10 @@ package cc.mrbird.febs.cos.entity;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -17,6 +21,12 @@ import lombok.experimental.Accessors;
 public class BookInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键ID
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
     /**
      * 书籍ID
@@ -36,7 +46,7 @@ public class BookInfo implements Serializable {
     /**
      * 最后更新时间
      */
-    private LocalDateTime updateDate;
+    private String updateDate;
 
     /**
      * 最后章节
@@ -66,12 +76,14 @@ public class BookInfo implements Serializable {
     /**
      * 创建时间
      */
-    private LocalDateTime createDate;
+    private String createDate;
 
     /**
      * 审核状态（0.审核中 1.通过 2.驳回）
      */
     private String status;
 
+    @TableField(exist = false)
+    private String authorName;
 
 }

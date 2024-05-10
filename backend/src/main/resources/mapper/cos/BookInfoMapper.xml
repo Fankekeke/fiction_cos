@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.cos.dao.BookInfoMapper">
+
+    <!-- 分页获取书籍信息 -->
+    <select id="selectBookPage" resultType="java.util.LinkedHashMap">
+        select
+            bi.id,
+            bi.code,
+            bi.name,
+            bi.author_id,
+            bi.update_date,
+            bi.last_chapter,
+            bi.tag,
+            bi.content,
+            bi.images,
+            bi.`type`,
+            bi.create_date,
+            bi.status,
+            ai.name as authorName,
+            ai.images as authorImages
+        from
+            book_info bi
+                left join author_info ai on
+                (ai.id = bi.author_id)
+        where
+            1 = 1
+        <if test="bookInfo.name != null and bookInfo.name != ''">
+            AND bi.name LIKE CONCAT('%',#{bookInfo.name},'%')
+        </if>
+        <if test="bookInfo.code != null and bookInfo.code != ''">
+            AND bi.code LIKE CONCAT('%',#{bookInfo.code},'%')
+        </if>
+        <if test="bookInfo.authorName != null and bookInfo.authorName != ''">
+            AND ai.name LIKE CONCAT('%',#{bookInfo.authorName},'%')
+        </if>
+        order by
+            bi.create_date desc
+    </select>
+</mapper>

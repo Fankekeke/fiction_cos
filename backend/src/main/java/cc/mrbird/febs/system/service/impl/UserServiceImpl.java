@@ -5,6 +5,10 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.service.CacheService;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.common.utils.MD5Util;
+import cc.mrbird.febs.cos.entity.AuthorInfo;
+import cc.mrbird.febs.cos.entity.UserInfo;
+import cc.mrbird.febs.cos.service.IAuthorInfoService;
+import cc.mrbird.febs.cos.service.IUserInfoService;
 import cc.mrbird.febs.system.dao.UserMapper;
 import cc.mrbird.febs.system.dao.UserRoleMapper;
 import cc.mrbird.febs.system.domain.User;
@@ -13,6 +17,7 @@ import cc.mrbird.febs.system.manager.UserManager;
 import cc.mrbird.febs.system.service.UserConfigService;
 import cc.mrbird.febs.system.service.UserRoleService;
 import cc.mrbird.febs.system.service.UserService;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -43,10 +48,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private UserRoleService userRoleService;
     @Autowired
     private UserManager userManager;
-//    @Autowired
-//    private ITeacherInfoService teacherInfoService;
-//    @Autowired
-//    private IStudentInfoService studentInfoService;
+    @Autowired
+    private IUserInfoService userInfoService;
+    @Autowired
+    private IAuthorInfoService authorInfoService;
 
 
     @Override
@@ -196,69 +201,78 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     }
 
-//    /**
-//     * 注册用户-学生
-//     *
-//     * @param username 用户名
-//     * @param password 密码
-//     */
-//    @Override
-//    public void registStudent(String username, String password, StudentInfo studentInfo) throws Exception {
-//        User user = new User();
-//        user.setPassword(MD5Util.encrypt(username, password));
-//        user.setUsername(username);
-//        user.setCreateTime(new Date());
-//        user.setStatus(User.STATUS_VALID);
-//        user.setSsex(User.SEX_UNKNOW);
-//        user.setAvatar(User.DEFAULT_AVATAR);
-//        user.setDescription("注册用户");
-//        this.save(user);
-//
-//        studentInfo.setUserId(Math.toIntExact(user.getUserId()));
-//        studentInfoService.save(studentInfo);
-//
-//        UserRole ur = new UserRole();
-//        ur.setUserId(user.getUserId());
-//        ur.setRoleId(76L); // 注册用户角色 ID
-//        this.userRoleMapper.insert(ur);
-//
-//        // 创建用户默认的个性化配置
-//        userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
-//        // 将用户相关信息保存到 Redis中
-//        userManager.loadUserRedisCache(user);
-//    }
-//
-//    /**
-//     * 注册用户-教师
-//     *
-//     * @param username 用户名
-//     * @param password 密码
-//     */
-//    @Override
-//    public void registTeacher(String username, String password, TeacherInfo teacherInfo) throws Exception {
-//        User user = new User();
-//        user.setPassword(MD5Util.encrypt(username, password));
-//        user.setUsername(username);
-//        user.setCreateTime(new Date());
-//        user.setStatus(User.STATUS_VALID);
-//        user.setSsex(User.SEX_UNKNOW);
-//        user.setAvatar(User.DEFAULT_AVATAR);
-//        user.setDescription("注册用户");
-//        this.save(user);
-//
-//        teacherInfo.setUserId(Math.toIntExact(user.getUserId()));
-//        teacherInfoService.save(teacherInfo);
-//
-//        UserRole ur = new UserRole();
-//        ur.setUserId(user.getUserId());
-//        ur.setRoleId(75L); // 注册用户角色 ID
-//        this.userRoleMapper.insert(ur);
-//
-//        // 创建用户默认的个性化配置
-//        userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
-//        // 将用户相关信息保存到 Redis中
-//        userManager.loadUserRedisCache(user);
-//    }
+    /**
+     * 注册用户-用户
+     *
+     * @param username 用户名
+     * @param password 密码
+     */
+    @Override
+    public void registUser(String username, String password, String name) throws Exception {
+        User user = new User();
+        user.setPassword(MD5Util.encrypt(username, password));
+        user.setUsername(username);
+        user.setCreateTime(new Date());
+        user.setStatus(User.STATUS_VALID);
+        user.setSsex(User.SEX_UNKNOW);
+        user.setAvatar(User.DEFAULT_AVATAR);
+        user.setDescription("注册用户");
+        this.save(user);
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        userInfo.setCode("UR-" + System.currentTimeMillis());
+        userInfo.setStatus("0");
+        userInfo.setName(name);
+        userInfo.setUserId(Math.toIntExact(user.getUserId()));
+        userInfoService.save(userInfo);
+
+        UserRole ur = new UserRole();
+        ur.setUserId(user.getUserId());
+        ur.setRoleId(76L); // 注册用户角色 ID
+        this.userRoleMapper.insert(ur);
+
+        // 创建用户默认的个性化配置
+        userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
+        // 将用户相关信息保存到 Redis中
+        userManager.loadUserRedisCache(user);
+    }
+
+    /**
+     * 注册用户-创作者
+     *
+     * @param username 用户名
+     * @param password 密码
+     */
+    @Override
+    public void registAuthor(String username, String password, String name) throws Exception {
+        User user = new User();
+        user.setPassword(MD5Util.encrypt(username, password));
+        user.setUsername(username);
+        user.setCreateTime(new Date());
+        user.setStatus(User.STATUS_VALID);
+        user.setSsex(User.SEX_UNKNOW);
+        user.setAvatar(User.DEFAULT_AVATAR);
+        user.setDescription("注册用户");
+        this.save(user);
+
+        AuthorInfo authorInfo = new AuthorInfo();
+        authorInfo.setCode("AUTH-" + System.currentTimeMillis());
+        authorInfo.setName(name);
+        authorInfo.setUserId(Math.toIntExact(user.getUserId()));
+        authorInfo.setCreateDate(DateUtil.formatDateTime(new Date()))
+        authorInfoService.save(authorInfo);
+
+        UserRole ur = new UserRole();
+        ur.setUserId(user.getUserId());
+        ur.setRoleId(75L); // 注册用户角色 ID
+        this.userRoleMapper.insert(ur);
+
+        // 创建用户默认的个性化配置
+        userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
+        // 将用户相关信息保存到 Redis中
+        userManager.loadUserRedisCache(user);
+    }
 
     @Override
     @Transactional
