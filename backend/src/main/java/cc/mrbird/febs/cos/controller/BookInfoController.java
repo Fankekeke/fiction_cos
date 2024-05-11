@@ -43,7 +43,18 @@ public class BookInfoController {
      */
     @GetMapping("/{id}")
     public R detail(@PathVariable("id") Integer id) {
-        return R.ok(bookInfoService.getById(id));
+        return R.ok(bookInfoService.selectDetailById(id));
+    }
+
+    /**
+     * 根据用户ID获取书籍信息
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @GetMapping("/list/byUserId")
+    public R selectBookByUserId(Integer userId) {
+        return R.ok(bookInfoService.selectBookByUserId(userId));
     }
 
     /**

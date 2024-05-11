@@ -260,7 +260,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         authorInfo.setCode("AUTH-" + System.currentTimeMillis());
         authorInfo.setName(name);
         authorInfo.setUserId(Math.toIntExact(user.getUserId()));
-        authorInfo.setCreateDate(DateUtil.formatDateTime(new Date()))
+        authorInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         authorInfoService.save(authorInfo);
 
         UserRole ur = new UserRole();

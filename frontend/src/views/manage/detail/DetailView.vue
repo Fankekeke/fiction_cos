@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="书籍详情" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="章节详情" @cancel="onClose" :width="800">
     <template slot="footer">
       <a-button key="back" @click="onClose" type="danger">
         关闭
@@ -7,70 +7,37 @@
     </template>
     <div style="font-size: 13px;font-family: SimHei" v-if="bookData !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">书籍信息</span></a-col>
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">章节信息</span></a-col>
         <a-col :span="8"><b>书籍编号：</b>
           {{ bookData.code ? bookData.code : '- -' }}
         </a-col>
         <a-col :span="8"><b>书籍名称：</b>
+          {{ bookData.bookName ? bookData.bookName : '- -' }}
+        </a-col>
+        <a-col :span="8"><b>章节名称：</b>
           {{ bookData.name ? bookData.name : '- -' }}
         </a-col>
-        <a-col :span="8"><b>最后更新时间：</b>
-          {{ bookData.updateDate ? bookData.updateDate : '- -' }}
+      </a-row>
+      <br/>
+      <a-row style="padding-left: 24px;padding-right: 24px;">
+        <a-col :span="8"><b>排序：</b>
+          {{ bookData.indexNo ? bookData.indexNo : '- -' }}
+        </a-col>
+        <a-col :span="8"><b>浏览量：</b>
+          {{ bookData.views ? bookData.views : '- -' }}
+        </a-col>
+        <a-col :span="8"><b>是否需要会员：</b>
+          <span v-if="bookData.checkFlag == 0">否</span>
+          <span v-if="bookData.checkFlag == 1" style="color: green">是</span>
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="8"><b>标签：</b>
-          {{ bookData.tag }}
-        </a-col>
-        <a-col :span="8"><b>书籍类型：</b>
-          <span v-if="bookData.type == 1">玄幻</span>
-          <span v-if="bookData.type == 2">奇幻</span>
-          <span v-if="bookData.type == 3">武侠</span>
-          <span v-if="bookData.type == 4">都市</span>
-          <span v-if="bookData.type == 5">现实</span>
-        </a-col>
-        <a-col :span="8"><b>审核状态：</b>
-          <span v-if="bookData.status == 0">审核中</span>
-          <span v-if="bookData.status == 1">通过</span>
-          <span v-if="bookData.status == 2">驳回</span>
-        </a-col>
-      </a-row>
-      <br/>
-      <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="8"><b>最后章节：</b>
-          {{ bookData.lastChapter ? bookData.lastChapter : '- -' }}
-        </a-col>
-        <a-col :span="8"><b>作者名称：</b>
-          {{ bookData.authorName ? bookData.authorName : '- -' }}
+        <a-col :span="8"><b>本章字数：</b>
+          {{ bookData.words ? bookData.words : '- -' }}
         </a-col>
         <a-col :span="8"><b>创建时间：</b>
           {{ bookData.createDate }}
-        </a-col>
-      </a-row>
-      <br/>
-      <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="24"><b>备注：</b>
-          {{ bookData.content }}
-        </a-col>
-      </a-row>
-      <br/>
-      <br/>
-      <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">书籍图片</span></a-col>
-        <a-col :span="24">
-          <a-upload
-            name="avatar"
-            action="http://127.0.0.1:9527/file/fileUpload/"
-            list-type="picture-card"
-            :file-list="fileList"
-            @preview="handlePreview"
-            @change="picHandleChange"
-          >
-          </a-upload>
-          <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-            <img alt="example" style="width: 100%" :src="previewImage" />
-          </a-modal>
         </a-col>
       </a-row>
       <br/>

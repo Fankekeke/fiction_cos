@@ -21,4 +21,12 @@ public interface IFollowInfoService extends IService<FollowInfo> {
      * @return 结果
      */
     IPage<LinkedHashMap<String, Object>> selectFollowPage(Page<FollowInfo> page, FollowInfo followInfo);
+
+    /**
+     * 用户关注信息详情
+     *
+     * @param id 用户关注ID
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> selectDetail(Integer id);
 }

@@ -43,7 +43,7 @@ public class FollowInfoController {
      */
     @GetMapping("/{id}")
     public R detail(@PathVariable("id") Integer id) {
-        return R.ok(followInfoService.getById(id));
+        return R.ok(followInfoService.selectDetail(id));
     }
 
     /**

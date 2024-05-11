@@ -8,38 +8,86 @@
     <div style="font-size: 13px;font-family: SimHei" v-if="recordData !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">基础信息</span></a-col>
-        <a-col :span="8"><b>学生编号：</b>
-          {{ recordData.studentCode ? recordData.studentCode : '- -' }}
+        <a-col :span="8"><b>用户名称：</b>
+          {{ recordData.userName ? recordData.userName : '- -' }}
         </a-col>
-        <a-col :span="8"><b>学生姓名：</b>
-          {{ recordData.studentName ? recordData.studentName : '- -' }}
-        </a-col>
-        <a-col :span="8"><b>联系方式：</b>
-          {{ recordData.phone }}
+        <a-col :span="8"><b>点赞时间：</b>
+          {{ recordData.createDate ? recordData.createDate : '- -' }}
         </a-col>
       </a-row>
       <br/>
-      <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="8"><b>缴费内容：</b>
-          {{ recordData.feesName }}
-        </a-col>
-        <a-col :span="8"><b>价格：</b>
-          {{ recordData.price }} 元
-        </a-col>
-        <a-col :span="8"><b>缴费状态：</b>
-          <span v-if="recordData.status == 0" style="color: red">未缴费</span>
-          <span v-if="recordData.status == 1" style="color: green">已缴费</span>
-        </a-col>
-      </a-row>
+      <div style="font-size: 13px;font-family: SimHei" v-if="authorInfo !== null">
+        <a-row style="padding-left: 24px;padding-right: 24px;">
+          <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">创作者信息</span></a-col>
+          <a-col :span="8"><b>创作者编号：</b>
+            {{ authorInfo.code ? authorInfo.code : '- -' }}
+          </a-col>
+          <a-col :span="8"><b>创作者姓名：</b>
+            {{ authorInfo.name ? authorInfo.name : '- -' }}
+          </a-col>
+          <a-col :span="8"><b>联系方式：</b>
+            {{ authorInfo.phone }}
+          </a-col>
+        </a-row>
+        <br/>
+        <a-row style="padding-left: 24px;padding-right: 24px;">
+          <a-col :span="8"><b>创建时间：</b>
+            {{ authorInfo.createDate }}
+          </a-col>
+          <a-col :span="8"><b>性别：</b>
+            <span v-if="authorInfo.sex == 1">男</span>
+            <span v-if="authorInfo.sex == 2">女</span>
+          </a-col>
+        </a-row>
+      </div>
       <br/>
-      <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="8"><b>支付时间：</b>
-          {{ recordData.payDate }}
-        </a-col>
-        <a-col :span="8"><b>订单编号：</b>
-          {{ recordData.code }}
-        </a-col>
-      </a-row>
+      <div style="font-size: 13px;font-family: SimHei" v-if="bookInfo !== null">
+        <a-row style="padding-left: 24px;padding-right: 24px;">
+          <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">书籍信息</span></a-col>
+          <a-col :span="8"><b>书籍编号：</b>
+            {{ bookInfo.code ? bookInfo.code : '- -' }}
+          </a-col>
+          <a-col :span="8"><b>书籍名称：</b>
+            {{ bookInfo.name ? bookInfo.name : '- -' }}
+          </a-col>
+          <a-col :span="8"><b>最后更新时间：</b>
+            {{ bookInfo.updateDate ? bookInfo.updateDate : '- -' }}
+          </a-col>
+        </a-row>
+        <br/>
+        <a-row style="padding-left: 24px;padding-right: 24px;">
+          <a-col :span="8"><b>标签：</b>
+            {{ bookInfo.tag }}
+          </a-col>
+          <a-col :span="8"><b>书籍类型：</b>
+            <span v-if="bookInfo.type == 1">玄幻</span>
+            <span v-if="bookInfo.type == 2">奇幻</span>
+            <span v-if="bookInfo.type == 3">武侠</span>
+            <span v-if="bookInfo.type == 4">都市</span>
+            <span v-if="bookInfo.type == 5">现实</span>
+          </a-col>
+          <a-col :span="8"><b>审核状态：</b>
+            <span v-if="bookInfo.status == 0">审核中</span>
+            <span v-if="bookInfo.status == 1">通过</span>
+            <span v-if="bookInfo.status == 2">驳回</span>
+          </a-col>
+        </a-row>
+        <br/>
+        <a-row style="padding-left: 24px;padding-right: 24px;">
+          <a-col :span="8"><b>最后章节：</b>
+            {{ bookInfo.lastChapter ? bookInfo.lastChapter : '- -' }}
+          </a-col>
+          <a-col :span="8"><b>创建时间：</b>
+            {{ bookInfo.createDate }}
+          </a-col>
+        </a-row>
+        <br/>
+        <a-row style="padding-left: 24px;padding-right: 24px;">
+          <a-col :span="24"><b>备注：</b>
+            {{ bookInfo.content }}
+          </a-col>
+        </a-row>
+      </div>
       <br/>
     </div>
   </a-modal>
@@ -85,6 +133,9 @@ export default {
       previewImage: '',
       repairInfo: null,
       recordInfo: null,
+      bookInfo: null,
+      authorInfo: null,
+      bookDetail: [],
       durgList: [],
       logisticsList: [],
       userInfo: null
@@ -93,10 +144,18 @@ export default {
   watch: {
     recordShow: function (value) {
       if (value) {
+        this.selectDetail(this.recordData.bookId)
       }
     }
   },
   methods: {
+    selectDetail (id) {
+      this.$get(`/cos/book-info/${id}`).then((r) => {
+        this.bookInfo = r.data.book
+        this.bookDetail = r.data.detail
+        this.authorInfo = r.data.author
+      })
+    },
     local (recordData) {
       baiduMap.clearOverlays()
       baiduMap.rMap().enableScrollWheelZoom(true)
