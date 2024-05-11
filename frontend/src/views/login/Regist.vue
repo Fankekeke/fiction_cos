@@ -3,10 +3,20 @@
     <div class="user-layout-register">
       <a-form ref="formRegister" :autoFormCreate="(form)=>{this.form = form}" id="formRegister">
         <a-divider orientation="left"><span style="font-size: 12px">账户注册</span></a-divider>
+        <a-form-item>
+          <a-radio-group default-value="1" v-model="registType" button-style="solid">
+            <a-radio-button value="2">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用户&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </a-radio-button>
+            <a-radio-button value="3">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;创作者&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </a-radio-button>
+          </a-radio-group>
+        </a-form-item>
         <a-form-item
           fieldDecoratorId="clientName"
-          :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入客户名称' }]}">
-          <a-input type="text" v-model="clientName" placeholder="客户名称"></a-input>
+          :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入用户名称' }]}">
+          <a-input type="text" v-model="clientName" placeholder="用户名称"></a-input>
         </a-form-item>
         <a-form-item
           fieldDecoratorId="email"
@@ -77,6 +87,7 @@ export default {
   components: {},
   data () {
     return {
+      registType: '1',
       form: null,
       clientName: '',
       username: '',
@@ -185,7 +196,13 @@ export default {
     handleSubmit () {
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.$post('regist', {
+          let url = ''
+          if (this.registType === '2') {
+            url = 'regist/user'
+          } else {
+            url = 'regist/author'
+          }
+          this.$post(url, {
             username: this.username,
             password: this.password,
             name: this.clientName

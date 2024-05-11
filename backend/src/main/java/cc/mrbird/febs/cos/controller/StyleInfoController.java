@@ -64,6 +64,7 @@ public class StyleInfoController {
      */
     @PostMapping
     public R save(StyleInfo styleInfo) {
+        styleInfo.setCode("STY-" + System.currentTimeMillis());
         styleInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(styleInfoService.save(styleInfo));
     }

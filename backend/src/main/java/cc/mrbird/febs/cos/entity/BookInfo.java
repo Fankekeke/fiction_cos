@@ -86,4 +86,10 @@ public class BookInfo implements Serializable {
     @TableField(exist = false)
     private String authorName;
 
+    @TableField(exist = false)
+    private Integer views;
+
+    @TableField(exist = false)
+    private AuthorInfo authorInfo;
+
 }

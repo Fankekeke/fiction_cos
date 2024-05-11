@@ -38,4 +38,18 @@ public interface IBookInfoService extends IService<BookInfo> {
      * @return 结果
      */
     List<BookInfo> selectBookByUserId(Integer userId);
+
+    /**
+     * 文章统计列表
+     *
+     * @return 结果
+     */
+    List<BookInfo> selectListDetail();
+
+    /**
+     * 文章流量卡排行列表
+     *
+     * @return 结果
+     */
+    List<BookInfo> selectListTop();
 }

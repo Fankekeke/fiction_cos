@@ -22,16 +22,16 @@
               <a-col :span="4"></a-col>
               <a-col :span="4"></a-col>
               <a-col :span="4">
-                <head-info title="学生数量" :content="titleData.staffNum" :center="false" :bordered="false"/>
+                <head-info title="作家数量" :content="titleData.authorNum" :center="false" :bordered="false"/>
               </a-col>
               <a-col :span="4">
-                <head-info title="总收益" :content="titleData.totalRevenue" :center="false" :bordered="false"/>
+                <head-info title="用户数量" :content="titleData.userNum" :center="false" :bordered="false"/>
               </a-col>
               <a-col :span="4">
-                <head-info title="班级数量" :content="titleData.totalOrderNum" :center="false" :bordered="false"/>
+                <head-info title="文章数量" :content="titleData.bookNum" :center="false" :bordered="false"/>
               </a-col>
               <a-col :span="4">
-                <head-info title="教师数量" :content="titleData.roomNum" :center="false"/>
+                <head-info title="总收益" :content="titleData.totalRevenue" :center="false"/>
               </a-col>
             </a-row>
           </div>
@@ -63,10 +63,10 @@ export default {
   data () {
     return {
       titleData: {
-        staffNum: 0,
-        totalRevenue: 0,
-        totalOrderNum: 0,
-        roomNum: 0
+        userNum: 0,
+        authorNum: 0,
+        bookNum: 0,
+        totalRevenue: 0
       },
       series: [],
       chartOptions: {

@@ -36,6 +36,16 @@ public class MemberOrderInfoController {
     }
 
     /**
+     * 首页数据统计
+     *
+     * @return 结果
+     */
+    @GetMapping("/home/data")
+    public R homeData() {
+        return R.ok(memberOrderInfoService.homeData());
+    }
+
+    /**
      * 会员订单信息详情
      *
      * @param id 会员订单ID

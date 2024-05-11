@@ -35,7 +35,7 @@
                   <a-col :span="4"><a-icon type="arrow-up" style="font-size: 30px;margin-top: 3px"/></a-col>
                   <a-col :span="18" style="font-size: 28px;font-weight: 500;font-family: SimHei">
                     {{ titleData.incomeYear }}
-                    <span style="font-size: 20px;margin-top: 3px">单</span>
+                    <span style="font-size: 20px;margin-top: 3px">元</span>
                   </a-col>
                 </a-row>
               </a-card>
@@ -106,7 +106,7 @@
       </a-col>
     </a-row>
     <a-row style="margin-top: 15px" v-if="user.roleId == 74">
-      <a-col :span="12">
+      <a-col :span="24">
         <a-card :loading="loading" :bordered="false" title="公告信息" style="margin-top: 15px">
           <div style="padding: 0 22px">
             <a-list item-layout="vertical" :pagination="pagination" :data-source="bulletinList">
@@ -298,8 +298,8 @@ export default {
   },
   methods: {
     selectHomeData () {
-      this.$get('/cos/fees-info/home/data', {roleId: this.user.roleId, userId: this.user.userId}).then((r) => {
-        let titleData = { staffNum: r.data.staffNum, totalRevenue: r.data.totalRevenue, totalOrderNum: r.data.totalOrderNum, roomNum: r.data.roomNum }
+      this.$get('/cos/member-order-info/home/data').then((r) => {
+        let titleData = { userNum: r.data.userNum, authorNum: r.data.authorNum, bookNum: r.data.bookNum, totalRevenue: r.data.totalRevenue }
         this.$emit('setTitle', titleData)
         this.titleData.incomeMonth = r.data.incomeMonth
         this.titleData.workOrderMonth = r.data.workOrderMonth

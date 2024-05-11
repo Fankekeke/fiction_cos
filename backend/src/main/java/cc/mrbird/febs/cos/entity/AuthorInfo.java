@@ -2,8 +2,10 @@ package cc.mrbird.febs.cos.entity;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -67,5 +69,12 @@ public class AuthorInfo implements Serializable {
      */
     private Integer userId;
 
+    /**
+     * 粉丝数量
+     */
+    @TableField(exist = false)
+    private Integer fansNum;
 
+    @TableField(exist = false)
+    private List<BookInfo> bookInfoList;
 }

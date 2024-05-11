@@ -34,4 +34,139 @@
         order by
             moi.create_date desc
     </select>
+
+    <!-- 本月收益 -->
+    <select id="selectIncomeMonth" resultType="java.math.BigDecimal">
+        SELECT
+            IFNULL( SUM( pr.price ), 0 )
+        FROM
+            member_order_info pr
+        WHERE
+                DATE_FORMAT( pr.create_date, '%Y%m' ) = DATE_FORMAT(
+                    CURDATE(),
+                    '%Y%m')
+          AND pr.status = '1'
+    </select>
+
+    <!-- 本月工单 -->
+    <select id="selectWorkOrderMonth" resultType="java.lang.Integer">
+        SELECT
+            IFNULL( count( 1 ), 0 )
+        FROM
+            member_order_info oi
+        WHERE
+                DATE_FORMAT( oi.create_date, '%Y%m' ) = DATE_FORMAT(
+                    CURDATE(),
+                    '%Y%m')
+          AND oi.status = '1'
+    </select>
+
+    <!-- 本年收益 -->
+    <select id="selectIncomeYear" resultType="java.math.BigDecimal">
+        SELECT
+            IFNULL( SUM( pr.price ), 0 )
+        FROM
+            member_order_info pr
+        WHERE
+                DATE_FORMAT( pr.create_date, '%Y' ) = DATE_FORMAT(
+                    CURDATE(),
+                    '%Y')
+          AND pr.status = '1'
+    </select>
+
+    <!-- 本年工单 -->
+    <select id="selectWorkOrderYear" resultType="java.lang.Integer">
+        SELECT
+            IFNULL( count( 1 ), 0 )
+        FROM
+            member_order_info oi
+        WHERE
+                DATE_FORMAT( oi.create_date, '%Y' ) = DATE_FORMAT(
+                    CURDATE(),
+                    '%Y')
+          AND oi.status = '1'
+    </select>
+
+    <!-- 获取缴费总收益 -->
+    <select id="selectAmountPrice" resultType="java.math.BigDecimal">
+        SELECT
+            IFNULL(SUM(pr.price), 0)
+        FROM
+            member_order_info pr
+        WHERE pr.status = '1'
+    </select>
+
+    <!-- 查询十天内缴费统计 -->
+    <select id="selectPaymentRecord" resultType="java.util.LinkedHashMap">
+        SELECT
+            DATE_FORMAT( spo.days, '%m-%d' ) AS days,
+            IFNULL(SUM(pr.price), 0) AS amount
+        FROM
+            (
+                SELECT
+                    DATE_SUB( curdate(), INTERVAL + 0 DAY ) days UNION
+                SELECT
+                    DATE_SUB( curdate(), INTERVAL + 1 DAY ) UNION
+                SELECT
+                    DATE_SUB( curdate(), INTERVAL + 2 DAY ) UNION
+                SELECT
+                    DATE_SUB( curdate(), INTERVAL + 3 DAY ) UNION
+                SELECT
+                    DATE_SUB( curdate(), INTERVAL + 4 DAY ) UNION
+                SELECT
+                    DATE_SUB( curdate(), INTERVAL + 5 DAY ) UNION
+                SELECT
+                    DATE_SUB( curdate(), INTERVAL + 6 DAY ) UNION
+                SELECT
+                    DATE_SUB( curdate(), INTERVAL + 7 DAY ) UNION
+                SELECT
+                    DATE_SUB( curdate(), INTERVAL + 8 DAY ) UNION
+                SELECT
+                    DATE_SUB( curdate(), INTERVAL + 9 DAY )) spo
+                LEFT JOIN member_order_info pr ON (
+                        DATE_FORMAT( pr.create_date, '%Y-%m-%d' ) = DATE_FORMAT( spo.days, '%Y-%m-%d' )
+                    AND pr.status = '1'
+                )
+        GROUP BY
+            days
+        ORDER BY
+            days ASC
+    </select>
+
+    <!-- 十天内工单记录 -->
+    <select id="selectOrderRecord" resultType="java.util.LinkedHashMap">
+        SELECT
+            DATE_FORMAT( spo.days, '%m-%d' ) AS days,
+            IFNULL(COUNT(oi.id), 0) AS count
+        FROM
+            (
+            SELECT
+            DATE_SUB( curdate(), INTERVAL + 0 DAY ) days UNION
+            SELECT
+            DATE_SUB( curdate(), INTERVAL + 1 DAY ) UNION
+            SELECT
+            DATE_SUB( curdate(), INTERVAL + 2 DAY ) UNION
+            SELECT
+            DATE_SUB( curdate(), INTERVAL + 3 DAY ) UNION
+            SELECT
+            DATE_SUB( curdate(), INTERVAL + 4 DAY ) UNION
+            SELECT
+            DATE_SUB( curdate(), INTERVAL + 5 DAY ) UNION
+            SELECT
+            DATE_SUB( curdate(), INTERVAL + 6 DAY ) UNION
+            SELECT
+            DATE_SUB( curdate(), INTERVAL + 7 DAY ) UNION
+            SELECT
+            DATE_SUB( curdate(), INTERVAL + 8 DAY ) UNION
+            SELECT
+            DATE_SUB( curdate(), INTERVAL + 9 DAY )) spo
+            LEFT JOIN member_order_info oi ON (
+            DATE_FORMAT( oi.create_date, '%Y-%m-%d' ) = DATE_FORMAT( spo.days, '%Y-%m-%d' )
+            AND oi.status = '1'
+            )
+        GROUP BY
+            days
+        ORDER BY
+            days ASC
+    </select>
 </mapper>

@@ -193,6 +193,19 @@ export default {
           </a-popover>
         }
       }, {
+        title: '状态',
+        dataIndex: 'status',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case '0':
+              return <a-tag color="red">锁定</a-tag>
+            case '1':
+              return <a-tag color="green">有效</a-tag>
+            default:
+              return '- -'
+          }
+        }
+      }, {
         title: '联系方式',
         dataIndex: 'phone',
         customRender: (text, row, index) => {

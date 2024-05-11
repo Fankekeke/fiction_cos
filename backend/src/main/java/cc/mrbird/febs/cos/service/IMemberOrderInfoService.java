@@ -21,4 +21,11 @@ public interface IMemberOrderInfoService extends IService<MemberOrderInfo> {
      * @return 结果
      */
     IPage<LinkedHashMap<String, Object>> selectOrderByPage(Page<MemberOrderInfo> page, MemberOrderInfo memberOrderInfo);
+
+    /**
+     * 首页数据统计
+     *
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> homeData();
 }

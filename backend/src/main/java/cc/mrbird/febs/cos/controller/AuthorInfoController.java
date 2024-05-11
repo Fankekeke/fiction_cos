@@ -36,6 +36,16 @@ public class AuthorInfoController {
     }
 
     /**
+     * 热门创作者统计
+     *
+     * @return 结果
+     */
+    @GetMapping("/selectListDetail")
+    public R selectListDetail() {
+        return R.ok(authorInfoService.selectListDetail());
+    }
+
+    /**
      * 作家信息详情
      *
      * @param id 作家ID
@@ -43,7 +53,7 @@ public class AuthorInfoController {
      */
     @GetMapping("/{id}")
     public R detail(@PathVariable("id") Integer id) {
-        return R.ok(authorInfoService.getById(id));
+        return R.ok(authorInfoService.selectAuthorDetail(id));
     }
 
     /**
@@ -54,6 +64,16 @@ public class AuthorInfoController {
     @GetMapping("/list")
     public R list() {
         return R.ok(authorInfoService.list());
+    }
+
+    /**
+     * 获取作者信息
+     *
+     * @return 结果
+     */
+    @GetMapping("/selectTopAuthor")
+    public R selectTopAuthor() {
+        return R.ok(authorInfoService.selectTopAuthor());
     }
 
     /**

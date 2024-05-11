@@ -11,7 +11,7 @@
         <a-col :span="8"><b>主题模板编号：</b>
           {{ styleData.code ? styleData.code : '- -' }}
         </a-col>
-        <a-col :span="8"><b>主题模板姓名：</b>
+        <a-col :span="8"><b>主题模板名称：</b>
           {{ styleData.name ? styleData.name : '- -' }}
         </a-col>
         <a-col :span="8"><b>联系方式：</b>

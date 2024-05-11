@@ -11,10 +11,10 @@
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
         <a-col :span="12">
-          <a-form-item label='主题模板姓名' v-bind="formItemLayout">
+          <a-form-item label='主题模板名称' v-bind="formItemLayout">
             <a-input v-decorator="[
             'name',
-            { rules: [{ required: true, message: '请输入主题模板姓名!' }] }
+            { rules: [{ required: true, message: '请输入主题模板名称!' }] }
             ]"/>
           </a-form-item>
         </a-col>

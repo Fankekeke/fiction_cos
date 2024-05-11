@@ -1,7 +1,13 @@
 <template>
   <a-modal v-model="show" title="书籍详情" @cancel="onClose" :width="800">
     <template slot="footer">
-      <a-button key="back" @click="onClose" type="danger">
+      <a-button key="back1" @click="audit(1)" v-if="bookData.status == 0">
+        通过
+      </a-button>
+      <a-button key="back2" @click="audit(2)" type="danger" v-if="bookData.status == 0">
+        驳回
+      </a-button>
+      <a-button key="back" @click="onClose()" type="danger" >
         关闭
       </a-button>
     </template>
@@ -132,6 +138,11 @@ export default {
     }
   },
   methods: {
+    audit (status) {
+      this.$get(`/cos/book-info/audit`, {id: this.bookData.id, status}).then((r) => {
+        this.$emit('success')
+      })
+    },
     local (bookData) {
       baiduMap.clearOverlays()
       baiduMap.rMap().enableScrollWheelZoom(true)

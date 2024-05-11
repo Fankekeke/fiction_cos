@@ -76,7 +76,7 @@
         </template>
         <template slot="operation" slot-scope="text, record">
           <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改"></a-icon>
-          <a-icon type="file-search" @click="bookViewOpen(record)" title="详 情" style="margin-left: 15px"></a-icon>
+          <a-icon type="audit" @click="bookViewOpen(record)" title="详 情" style="margin-left: 15px"></a-icon>
         </template>
       </a-table>
     </div>
@@ -94,6 +94,7 @@
     </book-edit>
     <book-view
       @close="handlebookViewClose"
+      @success="handlebookViewSuccess"
       :bookShow="bookView.visiable"
       :bookData="bookView.data">
     </book-view>
@@ -248,6 +249,11 @@ export default {
     },
     handlebookViewClose () {
       this.bookView.visiable = false
+    },
+    handlebookViewSuccess () {
+      this.bookView.visiable = false
+      this.$message.success('审核成功')
+      this.fetch()
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys

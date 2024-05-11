@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Fank gmail - fan1ke2ke@gmail.com
@@ -57,6 +55,33 @@ public class BookDetailInfoController {
         } else {
             return R.ok(detailList);
         }
+    }
+
+    /**
+     * 根据图书ID获取章节统计
+     *
+     * @param bookId 图书ID
+     * @return 结果
+     */
+    @GetMapping("/rate")
+    public R selectBookDetailRate(Integer bookId) {
+        List<BookDetailInfo> detailList = bookDetailInfoService.list(Wrappers.<BookDetailInfo>lambdaQuery().eq(BookDetailInfo::getBookId, bookId).orderByDesc(BookDetailInfo::getIndexNo));
+        if (CollectionUtil.isEmpty(detailList)) {
+            return R.ok(Collections.emptyList());
+        }
+
+        // 返回数据
+        List<LinkedHashMap<String, Object>> result = new ArrayList<>(detailList.size());
+        for (BookDetailInfo bookDetailInfo : detailList) {
+            LinkedHashMap<String, Object> item = new LinkedHashMap<String, Object>() {
+                {
+                    put("name", bookDetailInfo.getName());
+                    put("views", (bookDetailInfo.getViews() == null ? 0 : bookDetailInfo.getViews()));
+                }
+            };
+            result.add(item);
+        }
+        return R.ok(result);
     }
 
     /**

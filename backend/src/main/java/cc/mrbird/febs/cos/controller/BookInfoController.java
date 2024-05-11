@@ -5,6 +5,7 @@ import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.BookInfo;
 import cc.mrbird.febs.cos.service.IBookInfoService;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,18 @@ public class BookInfoController {
     }
 
     /**
+     * 图书状态审核
+     *
+     * @param id     主键ID
+     * @param status 状态
+     * @return 结果
+     */
+    @GetMapping("/audit")
+    public R audit(Integer id, String status) {
+        return R.ok(bookInfoService.update(Wrappers.<BookInfo>lambdaUpdate().set(BookInfo::getStatus, status).eq(BookInfo::getId, id)));
+    }
+
+    /**
      * 书籍信息详情
      *
      * @param id 书籍ID
@@ -55,6 +68,26 @@ public class BookInfoController {
     @GetMapping("/list/byUserId")
     public R selectBookByUserId(Integer userId) {
         return R.ok(bookInfoService.selectBookByUserId(userId));
+    }
+
+    /**
+     * 文章统计列表
+     *
+     * @return 结果
+     */
+    @GetMapping("/selectListDetail")
+    public R selectListDetail() {
+        return R.ok(bookInfoService.selectListDetail());
+    }
+
+    /**
+     * 文章流量卡排行列表
+     *
+     * @return 结果
+     */
+    @GetMapping("/selectListTop")
+    public R selectListTop() {
+        return R.ok(bookInfoService.selectListTop());
     }
 
     /**
@@ -89,6 +122,7 @@ public class BookInfoController {
      */
     @PutMapping
     public R edit(BookInfo bookInfo) {
+        bookInfo.setStatus("0");
         return R.ok(bookInfoService.updateById(bookInfo));
     }
 

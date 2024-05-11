@@ -7,6 +7,7 @@ import cc.mrbird.febs.cos.entity.BookDetailInfo;
 import cc.mrbird.febs.cos.entity.BookInfo;
 import cc.mrbird.febs.cos.dao.BookInfoMapper;
 import cc.mrbird.febs.cos.service.IBookInfoService;
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,9 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Fank gmail - fan1ke2ke@gmail.com
@@ -88,5 +88,60 @@ public class BookInfoServiceImpl extends ServiceImpl<BookInfoMapper, BookInfo> i
         }
 
         return this.list(Wrappers.<BookInfo>lambdaQuery().eq(BookInfo::getAuthorId, authorInfo.getId()));
+    }
+
+    /**
+     * 文章统计列表
+     *
+     * @return 结果
+     */
+    @Override
+    public List<BookInfo> selectListDetail() {
+        // 查询所有图书信息
+        List<BookInfo> bookInfoList = this.list();
+        if (CollectionUtil.isEmpty(bookInfoList)) {
+            return bookInfoList;
+        }
+
+        // 获取所有作者
+        List<AuthorInfo> authorInfoList = authorInfoMapper.selectList(Wrappers.<AuthorInfo>lambdaQuery());
+        Map<Integer, AuthorInfo> authorInfoMap = authorInfoList.stream().collect(Collectors.toMap(AuthorInfo::getId, e -> e));
+
+        for (BookInfo bookInfo : bookInfoList) {
+            if (CollectionUtil.isNotEmpty(authorInfoMap) && authorInfoMap.get(bookInfo.getAuthorId()) != null) {
+                bookInfo.setAuthorInfo(authorInfoMap.get(bookInfo.getAuthorId()));
+            }
+        }
+        return bookInfoList;
+    }
+
+    /**
+     * 文章流量卡排行列表
+     *
+     * @return 结果
+     */
+    @Override
+    public List<BookInfo> selectListTop() {
+        // 查询所有图书信息
+        List<BookInfo> bookInfoList = this.selectListDetail();
+        if (CollectionUtil.isEmpty(bookInfoList)) {
+            return bookInfoList;
+        }
+
+        List<BookDetailInfo> bookDetailList = bookDetailInfoMapper.selectList(Wrappers.<BookDetailInfo>lambdaQuery());
+        Map<Integer, List<BookDetailInfo>> bookDetailMap = bookDetailList.stream().collect(Collectors.groupingBy(BookDetailInfo::getBookId));
+
+        for (BookInfo bookInfo : bookInfoList) {
+            if (CollectionUtil.isNotEmpty(bookDetailMap) && CollectionUtil.isNotEmpty(bookDetailMap.get(bookInfo.getId()))) {
+                List<BookDetailInfo> detailInfoList = bookDetailMap.get(bookInfo.getId());
+                Integer count = detailInfoList.stream().mapToInt(BookDetailInfo::getViews).sum();
+                bookInfo.setViews(count);
+            } else {
+                bookInfo.setViews(0);
+            }
+        }
+
+        // 排序
+        return bookInfoList.stream().sorted(Comparator.comparing(BookInfo::getViews).reversed()).collect(Collectors.toList());
     }
 }
