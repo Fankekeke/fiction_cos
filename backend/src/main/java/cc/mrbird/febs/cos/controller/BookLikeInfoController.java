@@ -2,9 +2,14 @@ package cc.mrbird.febs.cos.controller;
 
 
 import cc.mrbird.febs.common.utils.R;
+import cc.mrbird.febs.cos.entity.BookDetailInfo;
 import cc.mrbird.febs.cos.entity.BookLikeInfo;
+import cc.mrbird.febs.cos.entity.FollowInfo;
+import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.service.IBookLikeInfoService;
+import cc.mrbird.febs.cos.service.IUserInfoService;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +27,8 @@ import java.util.List;
 public class BookLikeInfoController {
 
     private final IBookLikeInfoService bookLikeInfoService;
+
+    private final IUserInfoService userInfoService;
 
     /**
      * 分页获取书籍点赞信息
@@ -64,8 +71,18 @@ public class BookLikeInfoController {
      */
     @PostMapping
     public R save(BookLikeInfo bookLikeInfo) {
-        bookLikeInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
-        return R.ok(bookLikeInfoService.save(bookLikeInfo));
+        UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, bookLikeInfo.getUserId()));
+        if (userInfo != null) {
+            bookLikeInfo.setUserId(userInfo.getId());
+        }
+        // 判断用户是否关注
+        int count = bookLikeInfoService.count(Wrappers.<BookLikeInfo>lambdaQuery().eq(BookLikeInfo::getBookId, bookLikeInfo.getAuthorId()).eq(BookLikeInfo::getUserId, userInfo.getId()));
+        if (count > 0) {
+            return R.ok(true);
+        } else {
+            bookLikeInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+            return R.ok(bookLikeInfoService.save(bookLikeInfo));
+        }
     }
 
     /**

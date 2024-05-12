@@ -92,4 +92,7 @@ public class BookInfo implements Serializable {
     @TableField(exist = false)
     private AuthorInfo authorInfo;
 
+    @TableField(exist = false)
+    private Integer userId;
+
 }

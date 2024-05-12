@@ -3,8 +3,11 @@ package cc.mrbird.febs.cos.controller;
 
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.EvaluateInfo;
+import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.service.IEvaluateInfoService;
+import cc.mrbird.febs.cos.service.IUserInfoService;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ public class EvaluateInfoController {
 
     private final IEvaluateInfoService evaluateInfoService;
 
+    private final IUserInfoService userInfoService;
+
     /**
      * 分页获取书籍评价信息
      *
@@ -33,6 +38,17 @@ public class EvaluateInfoController {
     @GetMapping("/page")
     public R page(Page<EvaluateInfo> page, EvaluateInfo evaluateInfo) {
         return R.ok(evaluateInfoService.selectEvaluatePage(page, evaluateInfo));
+    }
+
+    /**
+     * 根据图书ID获取评价信息
+     *
+     * @param bookId 图书ID
+     * @return 结果
+     */
+    @GetMapping("/selectListByBookId/list")
+    public R selectListByBookId(Integer bookId) {
+        return R.ok(evaluateInfoService.selectListByBookId(bookId));
     }
 
     /**
@@ -64,6 +80,10 @@ public class EvaluateInfoController {
      */
     @PostMapping
     public R save(EvaluateInfo evaluateInfo) {
+        UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, evaluateInfo.getUserId()));
+        if (userInfo != null) {
+            evaluateInfo.setUserId(userInfo.getId());
+        }
         evaluateInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(evaluateInfoService.save(evaluateInfo));
     }

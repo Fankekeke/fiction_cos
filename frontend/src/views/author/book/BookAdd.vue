@@ -1,37 +1,73 @@
 <template>
-  <a-modal v-model="show" title="修改主题模板" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="新增书籍" @cancel="onClose" :width="800">
     <template slot="footer">
       <a-button key="back" @click="onClose">
         取消
       </a-button>
       <a-button key="submit" type="primary" :loading="loading" @click="handleSubmit">
-        修改
+        提交
       </a-button>
     </template>
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
-        <a-col :span="24">
-          <a-form-item label='主题模板名称' v-bind="formItemLayout">
+        <a-col :span="12">
+          <a-form-item label='书籍名称' v-bind="formItemLayout">
             <a-input v-decorator="[
             'name',
-            { rules: [{ required: true, message: '请输入主题模板名称!' }] }
+            { rules: [{ required: true, message: '请输入书籍名称!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='字体颜色' v-bind="formItemLayout">
+          <a-form-item label='标签' v-bind="formItemLayout">
             <a-input v-decorator="[
-            'styleClass',
-            { rules: [{ required: true, message: '请输入字体颜色!' }] }
+            'tag',
+            { rules: [{ required: true, message: '请输入标签!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='背景颜色' v-bind="formItemLayout">
-            <a-input v-decorator="[
-            'backClass',
-            { rules: [{ required: true, message: '请输入背景颜色!' }] }
+          <a-form-item label='书籍类型' v-bind="formItemLayout">
+            <a-select v-decorator="[
+              'type',
+              { rules: [{ required: true, message: '请输入书籍类型!' }] }
+              ]">
+              <a-select-option value="1">玄幻</a-select-option>
+              <a-select-option value="2">奇幻</a-select-option>
+              <a-select-option value="3">武侠</a-select-option>
+              <a-select-option value="4">都市</a-select-option>
+              <a-select-option value="5">现实</a-select-option>
+            </a-select>
+          </a-form-item>
+        </a-col>
+        <a-col :span="24">
+          <a-form-item label='作品介绍' v-bind="formItemLayout">
+            <a-textarea :rows="6" v-decorator="[
+            'content',
+             { rules: [{ required: true, message: '请输入作品介绍!' }] }
             ]"/>
+          </a-form-item>
+        </a-col>
+        <a-col :span="24">
+          <a-form-item label='书籍图片' v-bind="formItemLayout">
+            <a-upload
+              name="avatar"
+              action="http://127.0.0.1:9527/file/fileUpload/"
+              list-type="picture-card"
+              :file-list="fileList"
+              @preview="handlePreview"
+              @change="picHandleChange"
+            >
+              <div v-if="fileList.length < 8">
+                <a-icon type="plus" />
+                <div class="ant-upload-text">
+                  Upload
+                </div>
+              </div>
+            </a-upload>
+            <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+              <img alt="example" style="width: 100%" :src="previewImage" />
+            </a-modal>
           </a-form-item>
         </a-col>
       </a-row>
@@ -56,9 +92,9 @@ const formItemLayout = {
   wrapperCol: { span: 24 }
 }
 export default {
-  name: 'styleEdit',
+  name: 'bookAdd',
   props: {
-    styleEditVisiable: {
+    bookAddVisiable: {
       default: false
     }
   },
@@ -68,7 +104,7 @@ export default {
     }),
     show: {
       get: function () {
-        return this.styleEditVisiable
+        return this.bookAddVisiable
       },
       set: function () {
       }
@@ -76,7 +112,6 @@ export default {
   },
   data () {
     return {
-      rowId: null,
       formItemLayout,
       form: this.$form.createForm(this),
       loading: false,
@@ -99,31 +134,6 @@ export default {
     picHandleChange ({ fileList }) {
       this.fileList = fileList
     },
-    imagesInit (images) {
-      if (images !== null && images !== '') {
-        let imageList = []
-        images.split(',').forEach((image, index) => {
-          imageList.push({uid: index, name: image, status: 'done', url: 'http://127.0.0.1:9527/imagesWeb/' + image})
-        })
-        this.fileList = imageList
-      }
-    },
-    setFormValues ({...style}) {
-      this.rowId = style.id
-      let fields = ['name', 'styleClass', 'backClass']
-      let obj = {}
-      Object.keys(style).forEach((key) => {
-        if (key === 'images') {
-          this.fileList = []
-          this.imagesInit(style['images'])
-        }
-        if (fields.indexOf(key) !== -1) {
-          this.form.getFieldDecorator(key)
-          obj[key] = style[key]
-        }
-      })
-      this.form.setFieldsValue(obj)
-    },
     reset () {
       this.loading = false
       this.form.resetFields()
@@ -136,18 +146,14 @@ export default {
       // 获取图片List
       let images = []
       this.fileList.forEach(image => {
-        if (image.response !== undefined) {
-          images.push(image.response)
-        } else {
-          images.push(image.name)
-        }
+        images.push(image.response)
       })
       this.form.validateFields((err, values) => {
-        values.id = this.rowId
         values.images = images.length > 0 ? images.join(',') : null
+        values.authorId = this.currentUser.userId
         if (!err) {
           this.loading = true
-          this.$put('/cos/style-info', {
+          this.$post('/cos/book-info', {
             ...values
           }).then((r) => {
             this.reset()

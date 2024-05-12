@@ -34,6 +34,9 @@
         <if test="bookInfo.authorName != null and bookInfo.authorName != ''">
             AND ai.name LIKE CONCAT('%',#{bookInfo.authorName},'%')
         </if>
+        <if test="bookInfo.userId != null">
+            AND ai.user_id = #{bookInfo.userId}
+        </if>
         order by
             bi.create_date desc
     </select>

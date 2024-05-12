@@ -2,15 +2,21 @@ package cc.mrbird.febs.cos.controller;
 
 
 import cc.mrbird.febs.common.utils.R;
-import cc.mrbird.febs.cos.entity.MemberOrderInfo;
+import cc.mrbird.febs.cos.entity.*;
+import cc.mrbird.febs.cos.service.IMemberInfoService;
 import cc.mrbird.febs.cos.service.IMemberOrderInfoService;
+import cc.mrbird.febs.cos.service.IRuleInfoService;
+import cc.mrbird.febs.cos.service.IUserInfoService;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -23,6 +29,12 @@ public class MemberOrderInfoController {
 
     private final IMemberOrderInfoService memberOrderInfoService;
 
+    private final IUserInfoService userInfoService;
+
+    private final IMemberInfoService memberInfoService;
+
+    private final IRuleInfoService ruleInfoService;
+
     /**
      * 分页获取会员订单信息
      *
@@ -33,6 +45,37 @@ public class MemberOrderInfoController {
     @GetMapping("/page")
     public R page(Page<MemberOrderInfo> page, MemberOrderInfo memberOrderInfo) {
         return R.ok(memberOrderInfoService.selectOrderByPage(page, memberOrderInfo));
+    }
+
+    /**
+     * 根据用户ID获取会员信息
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @GetMapping("/member/{userId}")
+    public R selectMemberByUserId(@PathVariable("userId") Integer userId) {
+        // 返回信息
+        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+        // 用户信息
+        UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, userId));
+        result.put("user", userInfo);
+
+        // 会员信息
+        List<MemberInfo> memberInfos = memberInfoService.list(Wrappers.<MemberInfo>lambdaQuery().eq(MemberInfo::getUserId, userInfo.getId()));
+        if (CollectionUtil.isNotEmpty(memberInfos)) {
+            for (MemberInfo memberInfo : memberInfos) {
+                if (DateUtil.isIn(new Date(), DateUtil.parseDateTime(memberInfo.getStartDate()), DateUtil.parseDateTime(memberInfo.getEndDate()))) {
+                    RuleInfo ruleInfo = ruleInfoService.getById(memberInfo.getMemberLevel());
+                    memberInfo.setRuleName(ruleInfo.getName());
+                    result.put("member", memberInfo);
+                    return R.ok(result);
+                }
+            }
+        } else {
+            result.put("member", null);
+        }
+        return R.ok(result);
     }
 
     /**

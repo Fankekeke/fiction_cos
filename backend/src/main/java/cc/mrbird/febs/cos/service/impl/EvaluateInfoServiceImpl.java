@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author Fank gmail - fan1ke2ke@gmail.com
@@ -26,5 +27,16 @@ public class EvaluateInfoServiceImpl extends ServiceImpl<EvaluateInfoMapper, Eva
     @Override
     public IPage<LinkedHashMap<String, Object>> selectEvaluatePage(Page<EvaluateInfo> page, EvaluateInfo evaluateInfo) {
         return baseMapper.selectEvaluatePage(page, evaluateInfo);
+    }
+
+    /**
+     * 根据图书ID获取评价信息
+     *
+     * @param bookId 图书ID
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> selectListByBookId(Integer bookId) {
+        return baseMapper.selectListByBookId(bookId);
     }
 }

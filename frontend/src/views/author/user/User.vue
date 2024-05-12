@@ -1,14 +1,14 @@
 <template>
-  <a-row :gutter="20">
-    <a-col :span="6">
+  <a-row :gutter="20" style="width: 100%">
+    <a-col :span="8">
       <a-card :loading="loading" :bordered="false">
         <a-form :form="form" layout="vertical">
           <a-row :gutter="20">
             <a-col :span="12">
-              <a-form-item label='用户姓名' v-bind="formItemLayout">
+              <a-form-item label='创作者姓名' v-bind="formItemLayout">
                 <a-input v-decorator="[
             'name',
-            { rules: [{ required: true, message: '请输入用户姓名!' }] }
+            { rules: [{ required: true, message: '请输入创作者姓名!' }] }
             ]"/>
               </a-form-item>
             </a-col>
@@ -40,7 +40,7 @@
               </a-form-item>
             </a-col>
             <a-col :span="24">
-              <a-form-item label='用户头像' v-bind="formItemLayout">
+              <a-form-item label='创作者头像' v-bind="formItemLayout">
                 <a-upload
                   name="avatar"
                   action="http://127.0.0.1:9527/file/fileUpload/"
@@ -68,19 +68,42 @@
         </a-button>
       </a-card>
     </a-col>
-    <a-col :span="18">
+    <a-col :span="16">
       <div style="background:#ECECEC; padding:30px;margin-top: 30px">
-        <a-card :bordered="false">
-          <a-spin :spinning="dataLoading">
-            <a-calendar>
-              <ul slot="dateCellRender" slot-scope="value" class="events">
-                <li v-for="item in getListData(value)" :key="item.content">
-                  <a-badge :status="item.type" :text="item.content" />
-                </li>
-              </ul>
-            </a-calendar>
-          </a-spin>
-        </a-card>
+        <a-list item-layout="vertical" size="large" :data-source="authorList">
+          <a-list-item slot="renderItem" key="item.title" slot-scope="item, index">
+            <template slot="actions">
+            </template>
+            <a-list-item-meta :description="item.content">
+              <a slot="title">
+                {{ item.name }}
+                <span style="margin-left: 15px;font-family: SimHei;font-size: 13px">粉丝<span style="">{{ item.fansNum }}</span></span>
+              </a>
+              <a-avatar slot="avatar" shape="square" :src="'http://127.0.0.1:9527/imagesWeb/' + item.images.split(',')[0]" v-if="item.images != null"/>
+              <a-avatar slot="avatar" shape="square" v-else/>
+            </a-list-item-meta>
+            <a-row :gutter="30">
+              <a-col :span="6" v-for="(item1, index2) in item.bookInfoList" :key="index2" @click="selectBookDetailRate(item1.id)">
+                <div style="background: #e8e8e8">
+                  <a-carousel autoplay style="height: 280px;" v-if="item1.images !== undefined && item1.images !== ''">
+                    <div style="width: 100%;height: 280px" v-for="(item2, index1) in item1.images.split(',')" :key="index1">
+                      <img :src="'http://127.0.0.1:9527/imagesWeb/'+item2" style="width: 100%;height: 280px">
+                    </div>
+                  </a-carousel>
+                  <a-card :bordered="false">
+                        <span slot="title">
+                          <span style="font-size: 14px;font-family: SimHei">
+                            《{{ item1.name }}》 | {{ item1.tag }}
+                            <div style="margin: 20px 0px 20px 0px">
+                            </div>
+                          </span>
+                        </span>
+                  </a-card>
+                </div>
+              </a-col>
+            </a-row>
+          </a-list-item>
+        </a-list>
       </div>
     </a-col>
   </a-row>
@@ -115,6 +138,7 @@ export default {
       formItemLayout,
       loading: false,
       courseInfo: [],
+      authorList: [],
       dataLoading: false,
       fileList: [],
       previewVisible: false,
@@ -146,11 +170,12 @@ export default {
     },
     getExpertInfo (userId) {
       this.dataLoading = true
-      this.$get(`/cos/user-info/detail/${userId}`).then((r) => {
-        this.expertInfo = r.data.user
+      this.$get(`/cos/author-info/detailByUserId/${userId}`).then((r) => {
+        this.expertInfo = r.data.data
+        this.authorList = [r.data.data]
         console.log(this.expertInfo)
         this.setFormValues(this.expertInfo)
-        this.courseInfo = r.data.order
+        // this.courseInfo = r.data.order
         this.dataLoading = false
       })
     },
@@ -210,7 +235,7 @@ export default {
         values.images = images.length > 0 ? images.join(',') : null
         if (!err) {
           this.loading = true
-          this.$put('/cos/user-info', {
+          this.$put('/cos/author-info', {
             ...values
           }).then((r) => {
             this.$message.success('更新成功')

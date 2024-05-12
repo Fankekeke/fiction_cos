@@ -2,7 +2,9 @@ package cc.mrbird.febs.cos.controller;
 
 
 import cc.mrbird.febs.common.utils.R;
+import cc.mrbird.febs.cos.entity.AuthorInfo;
 import cc.mrbird.febs.cos.entity.BookInfo;
+import cc.mrbird.febs.cos.service.IAuthorInfoService;
 import cc.mrbird.febs.cos.service.IBookInfoService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -23,6 +25,8 @@ import java.util.List;
 public class BookInfoController {
 
     private final IBookInfoService bookInfoService;
+
+    private final IAuthorInfoService authorInfoService;
 
     /**
      * 分页获取书籍信息
@@ -108,6 +112,12 @@ public class BookInfoController {
      */
     @PostMapping
     public R save(BookInfo bookInfo) {
+        // 获取作者信息
+        AuthorInfo authorInfo = authorInfoService.getOne(Wrappers.<AuthorInfo>lambdaQuery().eq(AuthorInfo::getUserId, bookInfo.getAuthorId()));
+        if (authorInfo != null) {
+            bookInfo.setAuthorId(authorInfo.getId());
+        }
+
         bookInfo.setCode("BK-" + System.currentTimeMillis());
         bookInfo.setStatus("0");
         bookInfo.setCreateDate(DateUtil.formatDateTime(new Date()));

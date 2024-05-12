@@ -42,6 +42,20 @@ public class BookDetailInfoController {
     }
 
     /**
+     * 更新浏览量
+     *
+     * @param detailId 章节ID
+     * @return 结果
+     */
+    @GetMapping("/views/edit")
+    public R updateViews(Integer detailId) {
+        BookDetailInfo bookDetailInfo = bookDetailInfoService.getById(detailId);
+        bookDetailInfo.setViews(bookDetailInfo.getViews() + 1);
+        bookDetailInfoService.updateById(bookDetailInfo);
+        return R.ok(true);
+    }
+
+    /**
      * 根据图书ID获取章节信息
      *
      * @param bookId 图书ID

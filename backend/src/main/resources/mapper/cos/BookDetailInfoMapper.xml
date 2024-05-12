@@ -38,6 +38,9 @@
         <if test="bookDetailInfo.authorName != null and bookDetailInfo.authorName != ''">
             AND ai.name LIKE CONCAT('%',#{bookDetailInfo.authorName},'%')
         </if>
+        <if test="bookDetailInfo.userId != null">
+            AND ai.user_id = #{bookDetailInfo.userId}
+        </if>
         order by
             bti.create_date desc
     </select>

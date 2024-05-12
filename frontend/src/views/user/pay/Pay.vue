@@ -22,7 +22,7 @@ export default {
   },
   mounted () {
     if (getUrlKey('out_trade_no') !== null) {
-      this.$post('/cos/member-record-info/editOrder', { userId: this.currentUser.userId, orderCode: getUrlKey('out_trade_no') }).then((r) => {
+      this.$post('/cos/member-info/editOrder', { userId: this.currentUser.userId, orderCode: getUrlKey('out_trade_no') }).then((r) => {
       })
     }
   }

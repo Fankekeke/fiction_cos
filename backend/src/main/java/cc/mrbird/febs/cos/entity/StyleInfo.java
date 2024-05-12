@@ -41,6 +41,7 @@ public class StyleInfo implements Serializable {
      * 主题样式
      */
     private String styleClass;
+    private String backClass;
 
     /**
      * 创建时间

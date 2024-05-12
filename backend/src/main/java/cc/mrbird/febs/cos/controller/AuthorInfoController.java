@@ -5,6 +5,7 @@ import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.AuthorInfo;
 import cc.mrbird.febs.cos.service.IAuthorInfoService;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,18 @@ public class AuthorInfoController {
     @GetMapping("/{id}")
     public R detail(@PathVariable("id") Integer id) {
         return R.ok(authorInfoService.selectAuthorDetail(id));
+    }
+
+    /**
+     * 作家信息详情
+     *
+     * @param id 作家账户ID
+     * @return 结果
+     */
+    @GetMapping("/detailByUserId/{id}")
+    public R detailByUserId(@PathVariable("id") Integer id) {
+        AuthorInfo authorInfo = authorInfoService.getOne(Wrappers.<AuthorInfo>lambdaQuery().eq(AuthorInfo::getUserId, id));
+        return R.ok(authorInfoService.selectAuthorDetail(authorInfo.getId()));
     }
 
     /**

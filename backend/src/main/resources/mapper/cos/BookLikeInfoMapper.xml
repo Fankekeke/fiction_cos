@@ -39,6 +39,9 @@
         <if test="bookLikeInfo.authorName != null and bookLikeInfo.authorName != ''">
             AND ai.name LIKE CONCAT('%',#{bookLikeInfo.authorName},'%')
         </if>
+        <if test="bookLikeInfo.userId != null">
+            AND ui.user_id = #{ bookLikeInfo.userId }
+        </if>
         order by
             bli.create_date desc
     </select>

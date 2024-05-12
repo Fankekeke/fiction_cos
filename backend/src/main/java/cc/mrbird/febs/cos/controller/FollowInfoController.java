@@ -3,8 +3,11 @@ package cc.mrbird.febs.cos.controller;
 
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.FollowInfo;
+import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.service.IFollowInfoService;
+import cc.mrbird.febs.cos.service.IUserInfoService;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,8 @@ import java.util.List;
 public class FollowInfoController {
 
     private final IFollowInfoService followInfoService;
+
+    private final IUserInfoService userInfoService;
 
     /**
      * 分页获取用户关注信息
@@ -64,8 +69,18 @@ public class FollowInfoController {
      */
     @PostMapping
     public R save(FollowInfo followInfo) {
-        followInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
-        return R.ok(followInfoService.save(followInfo));
+        UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, followInfo.getUserId()));
+        if (userInfo != null) {
+            followInfo.setUserId(userInfo.getId());
+        }
+        // 判断用户是否关注
+        int count = followInfoService.count(Wrappers.<FollowInfo>lambdaQuery().eq(FollowInfo::getAuthorId, followInfo.getAuthorId()).eq(FollowInfo::getUserId, userInfo.getId()));
+        if (count > 0) {
+            return R.ok(true);
+        } else {
+            followInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+            return R.ok(followInfoService.save(followInfo));
+        }
     }
 
     /**

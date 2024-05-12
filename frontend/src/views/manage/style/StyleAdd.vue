@@ -10,7 +10,7 @@
     </template>
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
-        <a-col :span="12">
+        <a-col :span="24">
           <a-form-item label='主题模板名称' v-bind="formItemLayout">
             <a-input v-decorator="[
             'name',
@@ -18,11 +18,19 @@
             ]"/>
           </a-form-item>
         </a-col>
-        <a-col :span="24">
-          <a-form-item label='样式信息' v-bind="formItemLayout">
-            <a-textarea :rows="6" v-decorator="[
+        <a-col :span="12">
+          <a-form-item label='字体颜色' v-bind="formItemLayout">
+            <a-input v-decorator="[
             'styleClass',
-             { rules: [{ required: true, message: '请输入备注!' }] }
+            { rules: [{ required: true, message: '请输入字体颜色!' }] }
+            ]"/>
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item label='背景颜色' v-bind="formItemLayout">
+            <a-input v-decorator="[
+            'backClass',
+            { rules: [{ required: true, message: '请输入背景颜色!' }] }
             ]"/>
           </a-form-item>
         </a-col>

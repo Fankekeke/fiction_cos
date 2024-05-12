@@ -28,6 +28,9 @@
         <if test="followInfo.authorName != null and followInfo.authorName != ''">
             AND ai.name LIKE CONCAT('%',#{followInfo.authorName},'%')
         </if>
+        <if test="followInfo.userId != null">
+            AND ui.user_id = #{ followInfo.userId }
+        </if>
         order by
             fi.create_date desc
     </select>

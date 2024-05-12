@@ -13,7 +13,8 @@
                     {{ item.name }}
                     <span style="margin-left: 15px;font-family: SimHei;font-size: 13px">粉丝<span style="">{{ item.fansNum }}</span></span>
                   </a>
-                  <a-avatar slot="avatar" shape="square" :src="'http://127.0.0.1:9527/imagesWeb/' + item.images.split(',')[0]" />
+                  <a-avatar slot="avatar" shape="square" :src="'http://127.0.0.1:9527/imagesWeb/' + item.images.split(',')[0]" v-if="item.images != null"/>
+                  <a-avatar slot="avatar" shape="square" v-else/>
                 </a-list-item-meta>
                 <a-row :gutter="30">
                   <a-col :span="4" v-for="(item1, index2) in item.bookInfoList" :key="index2" @click="selectBookDetailRate(item1.id)">

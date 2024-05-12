@@ -9,6 +9,7 @@
             code,
             name,
             style_class,
+            back_class,
             create_date
         from
             style_info
