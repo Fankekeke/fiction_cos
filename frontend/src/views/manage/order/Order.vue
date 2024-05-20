@@ -152,9 +152,9 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case '0':
-              return <a-tag color="red">已支付</a-tag>
+              return <a-tag color="red">未支付</a-tag>
             case '1':
-              return <a-tag color="green">未支付</a-tag>
+              return <a-tag color="green">已支付</a-tag>
             default:
               return '- -'
           }

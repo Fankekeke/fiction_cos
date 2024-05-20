@@ -226,6 +226,8 @@ export default {
       if (value) {
         this.selectEvaluateBookList(this.bookData.id)
         this.selectBookDetailList(this.bookData.id)
+      } else {
+        this.bookDetail = null
       }
     }
   },

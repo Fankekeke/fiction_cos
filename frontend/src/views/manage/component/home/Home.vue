@@ -84,7 +84,7 @@
 <!--        </a-card>-->
 <!--      </a-col>-->
     </a-row>
-    <a-row style="margin-top: 15px" v-if="user.roleId == 75 || user.roleId == 76">
+    <a-row style="margin-top: 15px" v-if="user.roleId == 75">
       <a-col :span="24">
         <a-card :loading="loading" :bordered="false" title="公告信息" style="margin-top: 15px">
           <div style="padding: 0 22px">

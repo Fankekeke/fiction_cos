@@ -28,66 +28,18 @@
               <span style="font-size: 14px;font-family: SimHei">{{ userInfo.code }}</span>
             </div>
             <div style="float: left;margin-left: 20px;margin-top: 8px">
-              <span style="font-size: 14px;font-family: SimHei">电话：{{ userInfo.phone == null ? '- -' : userInfo.phone }}</span>
-            </div>
-            <div style="float: left;margin-left: 20px;margin-top: 8px">
-              <span style="font-size: 14px;font-family: SimHei">邮箱：{{ userInfo.email == null ? '- -' : userInfo.email }}</span>
+              <span style="font-size: 14px;font-family: SimHei">联系方式：{{ userInfo.phone == null ? '- -' : userInfo.phone }}</span>
             </div>
           </div>
         </a-card>
       </a-col>
     </a-row>
-    <div style="background:#ECECEC; padding:30px;margin-top: 30px;margin-bottom: 30px">
-      <a-row :gutter="30">
-        <a-col :span="6" v-for="(item, index) in statusList" :key="index">
-          <div style="background: #e8e8e8">
-            <a-carousel autoplay style="height: 150px;" v-if="item.images !== undefined && item.images !== ''">
-              <div style="width: 100%;height: 150px" v-for="(item, index) in item.images.split(',')" :key="index">
-                <img :src="'http://127.0.0.1:9527/imagesWeb/'+item" style="width: 100%;height: 150px">
-              </div>
-            </a-carousel>
-            <a-card :bordered="false">
-              <span slot="title">
-                <span style="font-size: 14px;font-family: SimHei">
-                  {{ item.spaceName }} | {{ item.spaceAddress }}
-                  <span style="margin-left: 15px;color: orange" v-if="item.status == -1">预约中</span>
-                  <span style="margin-left: 15px;color: green" v-if="item.status == 0">空闲</span>
-                  <span style="margin-left: 15px;color: red" v-if="item.status == 1">停车中</span>
-                  <a style="text-align: right;margin-left: 10px" v-if="item.status == 0" @click="showModal(item)"><a-icon type="paper-clip" />预约</a>
-                </span>
-              </span>
-            </a-card>
-          </div>
-        </a-col>
-      </a-row>
-      <a-modal
-        title="选择预定车辆"
-        :visible="visible"
-        @ok="reserveSpace"
-        @cancel="handleCancel"
-      >
-        <a-form :form="form" layout="vertical">
-          <a-row :gutter="20">
-            <a-col :span="12">
-              <a-form-item label='车辆信息' v-bind="formItemLayout">
-                <a-radio-group button-style="solid" v-decorator="[
-                    'vehicleId',
-                    {rules: [{ required: true, message: '请选择车辆' }]}
-                  ]">
-                  <a-radio-button :value="item.id" v-for="(item, index) in vehicleList" :key="index">
-                    {{ item.vehicleNumber }}
-                  </a-radio-button>
-                </a-radio-group>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
-      </a-modal>
-    </div>
+    <library></library>
   </a-card>
 </template>
 
 <script>
+import Library from '../../../user/library/Library.vue'
 import {mapState} from 'vuex'
 
 const formItemLayout = {
@@ -96,10 +48,12 @@ const formItemLayout = {
 }
 export default {
   name: 'Work',
+  components: {Library},
   data () {
     return {
       form: this.$form.createForm(this),
       formItemLayout,
+      newsContent: '',
       visible: false,
       statusList: [],
       vehicleList: [],
@@ -116,9 +70,7 @@ export default {
     })
   },
   mounted () {
-    this.getWorkStatusList()
     this.selectMemberByUserId()
-    this.selectVehicleByUserId()
   },
   methods: {
     newsNext () {
@@ -136,11 +88,6 @@ export default {
     handleCancel (e) {
       console.log('Clicked cancel button')
       this.visible = false
-    },
-    selectVehicleByUserId () {
-      this.$get(`/cos/vehicle-info/user/${this.currentUser.userId}`).then((r) => {
-        this.vehicleList = r.data.data
-      })
     },
     reserveSpace () {
       this.form.validateFields((err, values) => {
