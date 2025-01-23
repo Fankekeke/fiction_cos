@@ -75,7 +75,7 @@ sunxc
 |![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713511012.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713290464.png) |
 |![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713481538.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713280003.png) |
 |![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713471599.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713271319.png) |
-
+| ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/work/936e9baf53eb9a217af4f89c616dc19.png) |
 
 #### 演示视频
 
