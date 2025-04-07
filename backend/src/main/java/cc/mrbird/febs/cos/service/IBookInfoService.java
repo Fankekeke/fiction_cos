@@ -24,6 +24,14 @@ public interface IBookInfoService extends IService<BookInfo> {
     IPage<LinkedHashMap<String, Object>> selectBookPage(Page<BookInfo> page, BookInfo bookInfo);
 
     /**
+     * 推荐列表
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> userCfRecommend(Integer userId);
+
+    /**
      * 书籍信息详情
      *
      * @param bookId 书籍ID

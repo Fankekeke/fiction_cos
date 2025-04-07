@@ -1,12 +1,13 @@
 package cc.mrbird.febs.cos.service.impl;
 
+import cc.mrbird.febs.common.utils.ItemCF;
 import cc.mrbird.febs.cos.dao.AuthorInfoMapper;
 import cc.mrbird.febs.cos.dao.BookDetailInfoMapper;
-import cc.mrbird.febs.cos.entity.AuthorInfo;
-import cc.mrbird.febs.cos.entity.BookDetailInfo;
-import cc.mrbird.febs.cos.entity.BookInfo;
+import cc.mrbird.febs.cos.entity.*;
 import cc.mrbird.febs.cos.dao.BookInfoMapper;
 import cc.mrbird.febs.cos.service.IBookInfoService;
+import cc.mrbird.febs.cos.service.IBookLikeInfoService;
+import cc.mrbird.febs.cos.service.IEvaluateInfoService;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -30,6 +31,10 @@ public class BookInfoServiceImpl extends ServiceImpl<BookInfoMapper, BookInfo> i
 
     private final BookDetailInfoMapper bookDetailInfoMapper;
 
+    private final IEvaluateInfoService evaluateInfoService;
+
+    private final IBookLikeInfoService bookLikeInfoService;
+
     /**
      * 分页获取书籍信息
      *
@@ -40,6 +45,33 @@ public class BookInfoServiceImpl extends ServiceImpl<BookInfoMapper, BookInfo> i
     @Override
     public IPage<LinkedHashMap<String, Object>> selectBookPage(Page<BookInfo> page, BookInfo bookInfo) {
         return baseMapper.selectBookPage(page, bookInfo);
+    }
+
+    /**
+     * 推荐列表
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> userCfRecommend(Integer userId) {
+        // 获取所有评论信息
+        List<EvaluateInfo> evaluateInfoList = evaluateInfoService.list();
+        // 根据用户ID与图书ID转map
+        Map<String, List<EvaluateInfo>> evaluateInfoMap = evaluateInfoList.stream().collect(Collectors.groupingBy(e -> e.getUserId() + "|" + e.getBookId()));
+        // 获取所有点赞信息
+        List<BookLikeInfo> bookLikeInfoList = bookLikeInfoService.list();
+        // 根据用户ID与图书ID转map
+        Map<String, List<BookLikeInfo>> bookLikeInfoMap = bookLikeInfoList.stream().collect(Collectors.groupingBy(e -> e.getUserId() + "|" + e.getBookId()));
+
+
+        List<RelateDTO> data= new ArrayList<>();
+        // 评论一次+5，点赞一次+10
+
+
+        // 获取到推荐的id
+        List<Integer> recommendations = ItemCF.recommend(userId, data);
+        return null;
     }
 
     /**
