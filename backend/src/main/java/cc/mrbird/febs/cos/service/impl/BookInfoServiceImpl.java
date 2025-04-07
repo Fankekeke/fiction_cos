@@ -3,12 +3,14 @@ package cc.mrbird.febs.cos.service.impl;
 import cc.mrbird.febs.common.utils.ItemCF;
 import cc.mrbird.febs.cos.dao.AuthorInfoMapper;
 import cc.mrbird.febs.cos.dao.BookDetailInfoMapper;
+import cc.mrbird.febs.cos.dao.UserInfoMapper;
 import cc.mrbird.febs.cos.entity.*;
 import cc.mrbird.febs.cos.dao.BookInfoMapper;
 import cc.mrbird.febs.cos.service.IBookInfoService;
 import cc.mrbird.febs.cos.service.IBookLikeInfoService;
 import cc.mrbird.febs.cos.service.IEvaluateInfoService;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -34,6 +36,8 @@ public class BookInfoServiceImpl extends ServiceImpl<BookInfoMapper, BookInfo> i
     private final IEvaluateInfoService evaluateInfoService;
 
     private final IBookLikeInfoService bookLikeInfoService;
+
+    private final UserInfoMapper userInfoMapper;
 
     /**
      * 分页获取书籍信息
@@ -64,9 +68,35 @@ public class BookInfoServiceImpl extends ServiceImpl<BookInfoMapper, BookInfo> i
         // 根据用户ID与图书ID转map
         Map<String, List<BookLikeInfo>> bookLikeInfoMap = bookLikeInfoList.stream().collect(Collectors.groupingBy(e -> e.getUserId() + "|" + e.getBookId()));
 
+        // 所有图书信息
+        List<BookInfo> bookInfoList = this.list();
+        // 所有用户信息
+        List<UserInfo> userInfoList = userInfoMapper.selectList(Wrappers.<UserInfo>lambdaQuery());
+
+        if (CollectionUtil.isEmpty(bookInfoList) || CollectionUtil.isEmpty(userInfoList)) {
+            return Collections.emptyList();
+        }
 
         List<RelateDTO> data= new ArrayList<>();
         // 评论一次+5，点赞一次+10
+        for (BookInfo bookInfo : bookInfoList) {
+            for (UserInfo userInfo : userInfoList) {
+                // 获取此用户对应的评论次数
+                List<EvaluateInfo> evaluateInfos = evaluateInfoMap.get(userInfo.getId() + "|" + bookInfo.getId());
+                // 获取此用户对应的点赞次数
+                List<BookLikeInfo> bookLikeInfos = bookLikeInfoMap.get(userInfo.getId() + "|" + bookInfo.getId());
+                if (CollectionUtil.isNotEmpty(evaluateInfos) || CollectionUtil.isNotEmpty(bookLikeInfos)) {
+                    // 获取此用户对应的评论次数
+                    int evaluateCount = evaluateInfos.size();
+                    // 获取此用户对应的点赞次数
+                    int likeCount = bookLikeInfos.size();
+                    // 评论一次+5，点赞一次+10
+                    data.add(new RelateDTO(userInfo.getId(), bookInfo.getId(), NumberUtil.add(NumberUtil.mul(evaluateCount, 5), NumberUtil.mul(likeCount, 10))));
+                } else {
+                    data.add(new RelateDTO(userInfo.getId(), bookInfo.getId(), 0.0));
+                }
+            }
+        }
 
 
         // 获取到推荐的id
