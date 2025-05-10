@@ -4,8 +4,10 @@ package cc.mrbird.febs.cos.controller;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.AuthorInfo;
 import cc.mrbird.febs.cos.entity.BookInfo;
+import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.service.IAuthorInfoService;
 import cc.mrbird.febs.cos.service.IBookInfoService;
+import cc.mrbird.febs.cos.service.IUserInfoService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -27,6 +29,8 @@ public class BookInfoController {
     private final IBookInfoService bookInfoService;
 
     private final IAuthorInfoService authorInfoService;
+
+    private final IUserInfoService userInfoService;
 
     /**
      * 分页获取书籍信息
@@ -85,6 +89,29 @@ public class BookInfoController {
     }
 
     /**
+     * 搜索
+     *
+     * @param key 关键字
+     * @return 结果
+     */
+    @GetMapping("/selectListBySearch/{key}")
+    public R selectListBySearch(@PathVariable("key") String key) {
+        return R.ok(bookInfoService.selectListBySearch(key));
+    }
+
+    /**
+     * 用户CF推荐
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @GetMapping("/userCfRecommend")
+    public R userCfRecommend(Integer userId) {
+        UserInfo userInfo =  userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, userId));
+        return R.ok(bookInfoService.userCfRecommend(userInfo.getId()));
+    }
+
+    /**
      * 文章流量卡排行列表
      *
      * @return 结果
@@ -121,6 +148,7 @@ public class BookInfoController {
         bookInfo.setCode("BK-" + System.currentTimeMillis());
         bookInfo.setStatus("0");
         bookInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        bookInfo.setUpdateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(bookInfoService.save(bookInfo));
     }
 

@@ -29,7 +29,7 @@ public interface IBookInfoService extends IService<BookInfo> {
      * @param userId 用户ID
      * @return 结果
      */
-    List<LinkedHashMap<String, Object>> userCfRecommend(Integer userId);
+    List<BookInfo> userCfRecommend(Integer userId);
 
     /**
      * 书籍信息详情
@@ -53,6 +53,14 @@ public interface IBookInfoService extends IService<BookInfo> {
      * @return 结果
      */
     List<BookInfo> selectListDetail();
+
+    /**
+     * 搜索
+     *
+     * @param key 关键字
+     * @return 结果
+     */
+    List<BookInfo> selectListBySearch(String key);
 
     /**
      * 文章流量卡排行列表

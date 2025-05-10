@@ -61,6 +61,7 @@ export default {
       userInfo: null,
       memberInfo: null,
       spaceInfo: null,
+      newsPage: 0,
       newsList: []
     }
   },

@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <a-card :bordered="false" class="card-area" style="padding: 20px">
     <div>
       <a-row :gutter="30">
         <a-col :span="24" style="padding:30px;margin-top: 30px;margin-bottom: 30px">

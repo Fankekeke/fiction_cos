@@ -58,7 +58,7 @@ public class BookInfoServiceImpl extends ServiceImpl<BookInfoMapper, BookInfo> i
      * @return 结果
      */
     @Override
-    public List<LinkedHashMap<String, Object>> userCfRecommend(Integer userId) {
+    public List<BookInfo> userCfRecommend(Integer userId) {
         // 获取所有评论信息
         List<EvaluateInfo> evaluateInfoList = evaluateInfoService.list();
         // 根据用户ID与图书ID转map
@@ -87,9 +87,9 @@ public class BookInfoServiceImpl extends ServiceImpl<BookInfoMapper, BookInfo> i
                 List<BookLikeInfo> bookLikeInfos = bookLikeInfoMap.get(userInfo.getId() + "|" + bookInfo.getId());
                 if (CollectionUtil.isNotEmpty(evaluateInfos) || CollectionUtil.isNotEmpty(bookLikeInfos)) {
                     // 获取此用户对应的评论次数
-                    int evaluateCount = evaluateInfos.size();
+                    int evaluateCount = CollectionUtil.isEmpty(evaluateInfos) ? 0 : evaluateInfos.size();
                     // 获取此用户对应的点赞次数
-                    int likeCount = bookLikeInfos.size();
+                    int likeCount = CollectionUtil.isEmpty(bookLikeInfos) ? 0 : bookLikeInfos.size();
                     // 评论一次+5，点赞一次+10
                     data.add(new RelateDTO(userInfo.getId(), bookInfo.getId(), NumberUtil.add(NumberUtil.mul(evaluateCount, 5), NumberUtil.mul(likeCount, 10))));
                 } else {
@@ -97,11 +97,30 @@ public class BookInfoServiceImpl extends ServiceImpl<BookInfoMapper, BookInfo> i
                 }
             }
         }
-
-
         // 获取到推荐的id
         List<Integer> recommendations = ItemCF.recommend(userId, data);
-        return null;
+        if (CollectionUtil.isEmpty(recommendations)) {
+            return Collections.emptyList();
+        }
+
+        // 查询所有图书信息
+        List<BookInfo> bookInfoListResult = this.list(Wrappers.<BookInfo>lambdaQuery().in(BookInfo::getId, recommendations));
+        if (CollectionUtil.isEmpty(bookInfoListResult)) {
+            return bookInfoListResult;
+        }
+
+        // 获取所有作者
+        List<AuthorInfo> authorInfoList = authorInfoMapper.selectList(Wrappers.<AuthorInfo>lambdaQuery());
+        Map<Integer, AuthorInfo> authorInfoMap = authorInfoList.stream().collect(Collectors.toMap(AuthorInfo::getId, e -> e));
+
+        for (BookInfo bookInfo : bookInfoListResult) {
+            if (CollectionUtil.isNotEmpty(authorInfoMap) && authorInfoMap.get(bookInfo.getAuthorId()) != null) {
+                bookInfo.setAuthorInfo(authorInfoMap.get(bookInfo.getAuthorId()));
+            }
+        }
+        // 按照recommendations排序
+        bookInfoListResult.sort(Comparator.comparingInt(bookInfo -> recommendations.indexOf(bookInfo.getId())));
+        return bookInfoListResult;
     }
 
     /**
@@ -174,6 +193,38 @@ public class BookInfoServiceImpl extends ServiceImpl<BookInfoMapper, BookInfo> i
                 bookInfo.setAuthorInfo(authorInfoMap.get(bookInfo.getAuthorId()));
             }
         }
+        return bookInfoList;
+    }
+
+    /**
+     * 搜索
+     *
+     * @param key 关键字
+     * @return 结果
+     */
+    @Override
+    public List<BookInfo> selectListBySearch(String key) {
+        // 查询所有图书信息
+        List<BookInfo> bookInfoList = this.list();
+        if (CollectionUtil.isEmpty(bookInfoList)) {
+            return bookInfoList;
+        }
+
+        // 获取所有作者
+        List<AuthorInfo> authorInfoList = authorInfoMapper.selectList(Wrappers.<AuthorInfo>lambdaQuery());
+        Map<Integer, AuthorInfo> authorInfoMap = authorInfoList.stream().collect(Collectors.toMap(AuthorInfo::getId, e -> e));
+
+        for (BookInfo bookInfo : bookInfoList) {
+            if (CollectionUtil.isNotEmpty(authorInfoMap) && authorInfoMap.get(bookInfo.getAuthorId()) != null) {
+                bookInfo.setAuthorInfo(authorInfoMap.get(bookInfo.getAuthorId()));
+            }
+        }
+        if (CollectionUtil.isEmpty(bookInfoList)) {
+            return Collections.emptyList();
+        }
+
+        // 根据书名和作者过滤
+        bookInfoList = bookInfoList.stream().filter(e -> e.getName().contains(key) || e.getAuthorInfo().getName().contains(key)).collect(Collectors.toList());
         return bookInfoList;
     }
 

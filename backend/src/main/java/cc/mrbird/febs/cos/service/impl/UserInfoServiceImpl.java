@@ -1,10 +1,13 @@
 package cc.mrbird.febs.cos.service.impl;
 
+import cc.mrbird.febs.cos.dao.AuthorInfoMapper;
+import cc.mrbird.febs.cos.dao.FollowInfoMapper;
 import cc.mrbird.febs.cos.dao.MemberInfoMapper;
-import cc.mrbird.febs.cos.entity.MemberInfo;
-import cc.mrbird.febs.cos.entity.UserInfo;
+import cc.mrbird.febs.cos.entity.*;
 import cc.mrbird.febs.cos.dao.UserInfoMapper;
+import cc.mrbird.febs.cos.service.IBookInfoService;
 import cc.mrbird.febs.cos.service.IUserInfoService;
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,7 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Fank gmail - fan1ke2ke@gmail.com
@@ -23,6 +29,12 @@ import java.util.LinkedHashMap;
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements IUserInfoService {
 
     private final MemberInfoMapper memberInfoMapper;
+
+    private final FollowInfoMapper followInfoMapper;
+
+    private final AuthorInfoMapper authorInfoMapper;
+
+    private final IBookInfoService bookInfoService;
 
     /**
      * 分页获取用户信息
@@ -49,7 +61,17 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         UserInfo userInfo = this.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, userId));
         result.put("user", userInfo);
-        result.put("order", memberInfoMapper.selectList(Wrappers.<MemberInfo>lambdaQuery().eq(MemberInfo::getUserId, userInfo.getId())));
+        // 获取用户关注作者
+        List<FollowInfo> followInfoList = followInfoMapper.selectList(Wrappers.<FollowInfo>lambdaQuery().eq(FollowInfo::getUserId, userInfo.getId()));
+        List<Integer> authorIdList = followInfoList.stream().map(FollowInfo::getAuthorId).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(authorIdList)) {
+            result.put("order", Collections.emptyList());
+        } else {
+            // 获取作者图书信息
+            List<BookInfo> bookInfoList = bookInfoService.list(Wrappers.<BookInfo>lambdaQuery().in(BookInfo::getAuthorId, authorIdList));
+            // 获取用户关注作者的更新时间
+            result.put("order", bookInfoList);
+        }
         return result;
     }
 }

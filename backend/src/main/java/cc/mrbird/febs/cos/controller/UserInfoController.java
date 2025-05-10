@@ -69,6 +69,9 @@ public class UserInfoController {
 
         userService.update(Wrappers.<User>lambdaUpdate().set(User::getStatus, flag).eq(User::getUserId, userInfo.getUserId()));
         User user = userService.getById(userId);
+        if (user == null) {
+            throw new Exception("用户不存在");
+        }
         // 重新将用户信息，用户角色信息，用户权限信息 加载到 redis中
         cacheService.saveUser(user.getUsername());
         cacheService.saveRoles(user.getUsername());

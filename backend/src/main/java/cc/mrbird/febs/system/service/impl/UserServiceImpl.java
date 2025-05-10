@@ -227,6 +227,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userInfo.setUserId(Math.toIntExact(user.getUserId()));
         userInfoService.save(userInfo);
 
+        AuthorInfo authorInfo = new AuthorInfo();
+        authorInfo.setCode("AUTH-" + System.currentTimeMillis());
+        authorInfo.setName(name);
+        authorInfo.setUserId(Math.toIntExact(user.getUserId()));
+        authorInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        authorInfoService.save(authorInfo);
+
         UserRole ur = new UserRole();
         ur.setUserId(user.getUserId());
         ur.setRoleId(76L); // 注册用户角色 ID

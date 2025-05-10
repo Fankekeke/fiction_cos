@@ -64,6 +64,7 @@ public class RuleInfoController {
      */
     @PostMapping
     public R save(RuleInfo ruleInfo) {
+        ruleInfo.setCode("RU-" + System.currentTimeMillis());
         ruleInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(ruleInfoService.save(ruleInfo));
     }

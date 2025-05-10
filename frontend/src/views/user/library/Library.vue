@@ -2,9 +2,12 @@
   <a-card :bordered="false" class="card-area">
     <div>
       <a-row :gutter="30">
+        <a-col :span="6" style="margin-bottom: 20px;margin-top: 20px">
+          <a-input-search placeholder="搜索图书或者作者" enter-button @search="onSearch" />
+        </a-col>
         <a-col :span="24" style="background:#ECECEC; padding:30px;margin-top: 30px;margin-bottom: 30px">
           <a-row :gutter="30">
-            <a-col :span="6" v-for="(item, index) in bookList" :key="index" v-if="item.status == 1">
+            <a-col :span="6" v-for="(item, index) in bookList" :key="index" v-if="item.status == 1" style="margin-bottom: 20px">
               <div style="background: #e8e8e8">
                 <a-carousel autoplay style="height: 350px;" v-if="item.images !== undefined && item.images !== ''">
                   <div style="width: 100%;height: 350px" v-for="(item, index) in item.images.split(',')" :key="index">
@@ -39,9 +42,15 @@
 
 <script>
 import bookView from './BookView.vue'
+import {mapState} from 'vuex'
 export default {
   name: 'Work',
   components: {bookView},
+  computed: {
+    ...mapState({
+      currentUser: state => state.account.user
+    })
+  },
   data () {
     return {
       bookAdd: {
@@ -84,6 +93,15 @@ export default {
     this.getWorkStatusList()
   },
   methods: {
+    onSearch (value) {
+      if (value) {
+        this.$get(`/cos/book-info/selectListBySearch/${value}`).then((r) => {
+          this.bookList = r.data.data
+        })
+      } else {
+        this.getWorkStatusList()
+      }
+    },
     viewOpen (row) {
       this.bookAdd.data = row
       this.bookAdd.visiable = true
@@ -102,9 +120,13 @@ export default {
       })
     },
     getWorkStatusList () {
-      this.$get(`/cos/book-info/selectListDetail`).then((r) => {
+      // this.$get(`/cos/book-info/selectListDetail`).then((r) => {
+      //   this.bookList = r.data.data
+      // })
+      this.$get(`/cos/book-info/userCfRecommend`, {userId: this.currentUser.userId}).then((r) => {
         this.bookList = r.data.data
       })
+
     }
   }
 }

@@ -26,10 +26,14 @@ public class CoreMath {
             //排除此用户
             if (!k.equals(key)) {
                 //关系系数
-                double coefficient = relateDist(v, userItems, type);
-                //关系距离
-                //   double distance=Math.abs(coefficient);
-                distMap.put(k, coefficient);
+                if (CollectionUtil.isEmpty(userItems)) {
+                    distMap.put(k, 0D);
+                } else {
+                    double coefficient = relateDist(v, userItems, type);
+                    //关系距离
+                    //   double distance=Math.abs(coefficient);
+                    distMap.put(k, coefficient);
+                }
             }
         });
         return distMap;
