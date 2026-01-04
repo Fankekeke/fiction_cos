@@ -1,6 +1,12 @@
-<p><img align="center" src="https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/%E5%90%88%E4%BD%9C%E7%89%A9%E6%96%99%E6%A0%B7%E5%BC%8F%20(3).png" alt="fankekeke" /></p>
-
 ### 基于SpringBoot + Vue小说创作阅读系统.
+
+小说创作阅读系统、网文写作平台、互动阅读小程序、AI辅助创作工具、小说订阅系统
+
+> 管理员: 创作中心、我的书架、系统公告、作家管理、书籍管理、章节管理、图书点赞、书籍评论、用户关注、会员订单、会员价格、主题模板、用户管理、数据统计、文章统计、阅读排行、热门创作者
+
+> 用户: 我的信息、会员购买、我的关注、我的评价、书籍点赞、作品书库、支付成功
+
+> 创作者: 我的信息、我的书籍、章节管理
 
 #### 安装环境
 
@@ -28,15 +34,6 @@ WebStorm OR VScode 编译器 [https://www.jianshu.com/p/d63b5bae9dff]
 平台后台：springboot(框架) + redis(缓存中间件) + shiro(权限中间件) + mybatisplus(orm) + restful风格接口 + mysql(数据库)
 
 开发环境：windows10 or windows7 ， vscode or webstorm ， idea + lambok
-
-
-> 管理员: 创作中心、我的书架、系统公告、作家管理、书籍管理、章节管理、图书点赞、书籍评论、用户关注、会员订单、会员价格、主题模板、用户管理、数据统计、文章统计、阅读排行、热门创作者
-
-> 用户: 我的信息、会员购买、我的关注、我的评价、书籍点赞、作品书库、支付成功
-
-> 创作者: 我的信息、我的书籍、章节管理
-
-
 
 #### 前台启动方式
 安装所需文件 yarn install 
@@ -119,3 +116,5 @@ WeChat: `Storm_Berserker`
 `网站建设、小程序、H5、APP、各种系统 选题+开题报告+任务书+程序定制+安装调试+项目讲解+论文+答辩PPT`
 
 More info: [悲伤的橘子树](https://berserker287.github.io/)
+
+<p><img align="center" src="https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/%E5%90%88%E4%BD%9C%E7%89%A9%E6%96%99%E6%A0%B7%E5%BC%8F%20(3).png" alt="fankekeke" /></p>
