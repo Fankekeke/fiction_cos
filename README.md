@@ -1,14 +1,17 @@
-### 基于SpringBoot + Vue小说在线阅读系统.
+![](https://img.shields.io/badge/License-MIT-blue.svg)
 
-小说在线阅读系统、网文写作平台、互动阅读、小说订阅系统
+![](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)
 
-> 管理员: 创作中心、我的书架、系统公告、作家管理、书籍管理、章节管理、图书点赞、书籍评论、用户关注、会员订单、会员价格、主题模板、用户管理、数据统计、文章统计、阅读排行、热门创作者
+![](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
-> 用户: 我的信息、会员购买、我的关注、我的评价、书籍点赞、作品书库、支付成功
+# 基于 SpringBoot + Vue  的小说在线阅读系统
 
-> 创作者: 我的信息、我的书籍、章节管理
+读者阅读端 · 创作者工作台 · 平台管理后台 | 作品创作 · 会员订阅 · 评论互动 · 数据统计
+
+本项目是一套面向**网络文学平台**的在线阅读管理系统，采用前后端分离架构，覆盖**管理员（平台运营）、创作者（作家）、终端用户（读者）**三类核心角色。系统围绕"创作者创作发布→平台审核上架→读者在线阅读/会员订阅→评论互动→数据统计"的核心业务流程设计，同时集成会员体系、主题模板、阅读排行、创作者激励等模块，构建内容丰富、体验流畅的网络文学阅读平台。
 
 #### 安装环境
+️**注意**：请确保您的开发环境已安装以下依赖。
 
 JAVA 环境 
 
@@ -16,65 +19,167 @@ Node.js环境 [https://nodejs.org/en/] 选择14.17
 
 Yarn 打开cmd， 输入npm install -g yarn !!!必须安装完毕nodejs
 
-Mysql 数据库 [https://blog.csdn.net/qq_40303031/article/details/88935262] 一定要把账户和密码记住
+Mysql 数据库 一定要把账户和密码记住
 
 redis
 
-Idea 编译器 [https://blog.csdn.net/weixin_44505194/article/details/104452880]
+Idea 编译器
 
-WebStorm OR VScode 编译器 [https://www.jianshu.com/p/d63b5bae9dff]
+WebStorm OR VScode 编译器
 
 #### 采用技术及功能
 
 后端：SpringBoot、MybatisPlus、MySQL、Redis、
 前端：Vue、Apex、Antd、Axios
 
-平台前端：vue(框架) + vuex(全局缓存) + rue-router(路由) + axios(请求插件) + apex(图表)  + antd-ui(ui组件)
+平台前端：vue(框架) + vuex(全局缓存) + rue-router(路由) + axios(请求插件) + apex(图表)  + antd-ui(ui组件) + 百度地图 API
 
 平台后台：springboot(框架) + redis(缓存中间件) + shiro(权限中间件) + mybatisplus(orm) + restful风格接口 + mysql(数据库)
 
 开发环境：windows10 or windows7 ， vscode or webstorm ， idea + lambok
 
+---
+
+## 核心特性
+
+- **完善的创作与发布流程**：支持创作者创建书籍、分章撰写、定时发布/立即发布，管理员可对书籍/章节进行审核（通过/驳回/修改建议），确保平台内容合规。
+- **会员订阅体系**：支持会员等级配置、会员价格管理、会员专属内容解锁，读者购买会员后可免费阅读VIP章节，支持微信支付/支付宝在线支付。
+- **阅读体验优化**：支持多种主题模板切换（日间/夜间/护眼模式）、字体大小调节、阅读进度自动同步、离线缓存、书签功能，提供流畅的阅读体验。
+- **社区互动功能**：读者可对书籍点赞、发表评论、关注创作者，支持评论回复与点赞，构建活跃的读者社区。
+---
+
+## 适用场景
+
+- 网络文学在线阅读平台
+- 原创小说创作与发布平台
+- 会员制付费阅读系统
+- 文学社区与读者互动平台
+- 作家孵化与内容运营平台
+---
+
+## 功能模块概览
+
+## 管理员端
+
+管理员为平台运营中枢，负责全局管控与内容运营：
+
+### 内容与创作者管理
+
+- **创作中心**：平台内容总览，查看待审核书籍/章节数量、今日新增作品、热门作品推荐位管理、内容分类管理。
+- **作家管理**：管理入驻创作者信息，包括创作者ID、笔名、真实姓名、手机号、认证状态、签约状态、累计作品数、累计收益、注册时间，支持创作者审核、签约管理、收益结算。
+- **书籍管理**：管理全平台书籍，包括书籍ID、书名、作者、分类、封面、简介、连载状态（连载中/已完结）、审核状态（待审核/已通过/已驳回）、上架状态、点击量、收藏量，支持书籍审核、上下架、推荐位配置。
+- **章节管理**：管理全平台章节，包括章节ID、所属书籍、章节标题、章节内容、字数、发布时间、审核状态、VIP标识，支持章节审核、批量上下架。
+- **热门创作者**：展示平台热门创作者排行，包括创作者笔名、作品数、粉丝数、总阅读量、本月收益，支持按时间段筛选。
+
+### 用户与互动
+
+- **用户管理**：管理注册用户（读者），包括用户ID、昵称、手机号、头像、会员等级、会员到期时间、注册时间、账户状态，支持用户信息查询、封禁/解封。
+- **用户关注**：查看用户关注关系数据，包括关注者ID、被关注者ID（创作者/其他用户）、关注时间，支持关注数据查询。
+- **书籍点赞**：查看书籍点赞记录，包括用户ID、书籍ID、点赞时间，支持点赞数据统计。
+- **书籍评论**：管理书籍评论，包括评论ID、用户ID、书籍ID、评论内容、评论时间、点赞数、回复数，支持评论审核、违规评论删除。
+
+### 会员与运营
+
+- **会员订单**：查看会员购买订单，包括订单号、用户ID、会员等级、订单金额、支付方式、支付状态、购买时间，支持订单详情查看与退款处理。
+- **会员价格**：配置会员等级与价格，包括会员等级名称、有效期（月/季/年）、原价、优惠价、权益说明，支持会员价格增删改查。
+- **主题模板**：管理阅读器主题模板，包括模板名称、主题色、背景图、字体配置、适用端（Web/小程序/APP），支持模板上传与预览。
+- **系统公告**：发布与管理平台公告，包括公告标题、内容、类型（系统通知/活动公告/新书推荐/维护通知）、发布时间、置顶状态，支持公告编辑与删除。
+
+### 数据统计
+
+- **数据统计**：综合数据看板，展示核心运营指标（今日新增用户/今日阅读量/本月营收/待审核内容数/活跃创作者数/会员购买数），支持用户增长趋势、营收趋势、内容增长趋势等多维度图表展示。
+- **文章统计**：统计平台文章数据，包括总书籍数、总章节数、总字数、今日新增章节、分类分布、连载/完结比例。
+- **阅读排行**：统计书籍阅读排行，包括点击量排行、收藏量排行、推荐票排行、月票排行、新书榜、完结榜，支持按时间段/分类筛选。
+
+## 创作者端
+
+创作者通过工作台进行作品创作与管理：
+
+### 账户与作品
+
+- **我的信息**：查看与编辑个人基本信息，包括笔名、真实姓名、手机号、头像、个人简介、银行卡信息（收益结算用），支持信息修改。
+- **我的书籍**：创建与管理个人作品，包括书籍ID、书名、分类、封面、简介、连载状态、审核状态、点击量、收藏量、累计收益，支持书籍创建、编辑、删除、上下架申请。
+- **章节管理**：管理书籍章节，包括章节ID、章节标题、章节内容、字数、发布时间、审核状态、VIP标识，支持章节新建、编辑、删除、定时发布、立即发布，支持章节草稿保存。
+
+### 数据与收益
+
+- **作品数据**：查看个人作品数据，包括各书籍的点击量、收藏量、推荐票、月票、评论数、阅读时长，支持按时间段筛选。
+- **收益统计**：查看个人收益数据，包括会员分成、打赏收入、广告分成、累计收益、可提现金额，支持收益明细查看与提现申请。
+
+## 用户端（读者）
+
+读者通过Web/小程序/APP进行在线阅读与互动：
+
+### 账户与个人
+
+- **账户注册登录**：支持手机号+验证码注册与登录，支持微信/QQ/微博第三方授权一键登录，支持找回密码。
+- **我的信息**：查看与编辑个人基本信息，包括昵称、手机号、头像、性别、生日、个人简介，支持信息修改。
+- **我的关注**：查看关注的创作者列表，包括创作者笔名、头像、最新作品更新提醒，支持取消关注。
+
+### 阅读与书架
+
+- **作品书库**：浏览平台书籍，支持按分类筛选、关键词搜索、排序（热度/更新时间/评分），查看书籍详情（封面、简介、作者、分类、标签、章节列表、评论），支持加入书架、开始阅读。
+- **我的书架**：管理个人书架，包括已加入书架的书籍列表、最新阅读进度、更新提醒，支持书籍移除、批量管理。
+- **会员购买**：查看会员等级与权益，选择会员套餐进行购买，支持微信支付/支付宝在线支付，购买后解锁VIP章节阅读权限。
+- **支付成功**：查看会员购买支付结果，包括订单号、支付金额、会员等级、生效时间、到期时间。
+
+### 互动与评价
+
+- **书籍点赞**：对喜欢的书籍进行点赞/取消点赞，点赞数据实时同步。
+- **我的评价**：查看个人发表的书籍评论，包括评论内容、评论时间、点赞数、回复数，支持评论编辑、删除、回复他人评论。
+---
+
+## 项目结构
+
+```text
+pharmacy-dispensing-system/
+├── backend/            # 后端 API 服务
+│   ├── src/
+│   │   ├── controllers/  # 控制器
+│   │   ├── models/       # 数据模型
+│   │   ├── routes/       # 路由
+│   │   └── services/     # 业务逻辑
+│   └── package.json
+├── frontend/           # 前端 Web 应用
+│   ├── src/
+│   │   ├── views/      # 页面视图
+│   │   ├── components/ # 公共组件
+│   │   └── store/      # 状态管理
+│   └── package.json
+├── docs/               # 项目文档与 API 接口说明
+├── LICENSE
+└── README.md
+```
+---
+
+
 #### 前台启动方式
 安装所需文件 yarn install 
 运行 yarn run dev
 
-#### 后端启动方式
-
-1.首先启动redis，进入redis目录终端。输入redis-server回车
-2.导入sql文件，修改数据库与redis连接配置
-3.idea中启动后端项目
-
 #### 默认后台账户密码
 [管理员]
 admin
-1234qwer
+123456
 
 [用户]
 fank
-1234qwer
-
-[创作者]
-sunxc
-1234qwer
-
+123456
 
 #### 项目截图
-
 |  |  |
 |---------------------|---------------------|
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713254017.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713438672.png) |
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713228264.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713418100.png) |
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713209726.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713370545.png) |
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713191236.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713361539.png) |
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713177495.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713348898.png) |
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713154162.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713335091.png) |
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716712989080.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713322062.png) |
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713524981.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713308555.png) |
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713511012.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713290464.png) |
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713481538.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713280003.png) |
-|![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713471599.png) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1716713271319.png) |
-| ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/work/936e9baf53eb9a217af4f89c616dc19.png) |
+| ![](./assets/image%20(1).png) | ![](./assets/image%20(2).png) |
+| ![](./assets/image%20(3).png) | ![](./assets/image%20(4).png) |
+| ![](./assets/image%20(5).png) | ![](./assets/image%20(6).png) |
+| ![](./assets/image%20(7).png) | ![](./assets/image%20(8).png) |
+| ![](./assets/image%20(9).png) | ![](./assets/image%20(10).png) |
+| ![](./assets/image%20(11).png) | ![](./assets/image%20(12).png) |
+| ![](./assets/image%20(13).png) | ![](./assets/image%20(14).png) |
+| ![](./assets/image%20(15).png) | ![](./assets/image%20(16).png) |
+| ![](./assets/image%20(17).png) | ![](./assets/image%20(18).png) |
+| ![](./assets/image%20(19).png) | ![](./assets/image%20(20).png) |
+| ![](./assets/image%20(21).png) | ![](./assets/image%20(22).png) |
 
 #### 演示视频
 
@@ -92,7 +197,10 @@ WeChat: `Storm_Berserker`
 
 > 项目部署调试不好包退！功能逻辑没讲明白包退！
 
+<div align=center><img align="center" src="./assets/product_word.png" alt="fankekeke" /></div>
+
 #### 其它资源
+[2026年-答辩顺利通过-客户评价🀄](https://berserker287.github.io/2026/06/29/2026%E5%B9%B4%E7%AD%94%E8%BE%A9%E9%A1%BA%E5%88%A9%E9%80%9A%E8%BF%87/)
 
 [2025年-答辩顺利通过-客户评价🍜](https://berserker287.github.io/2025/06/18/2025%E5%B9%B4%E7%AD%94%E8%BE%A9%E9%A1%BA%E5%88%A9%E9%80%9A%E8%BF%87/)
 
@@ -110,11 +218,14 @@ WeChat: `Storm_Berserker`
 
 [计算机专业毕业答辩小tips](https://zhuanlan.zhihu.com/p/145911029)
 
-
 #### 接JAVAWEB毕设，纯原创，价格公道，诚信第一
 
 `网站建设、小程序、H5、APP、各种系统 选题+开题报告+任务书+程序定制+安装调试+项目讲解+论文+答辩PPT`
 
 More info: [悲伤的橘子树](https://berserker287.github.io/)
 
-<p><img align="center" src="https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/%E5%90%88%E4%BD%9C%E7%89%A9%E6%96%99%E6%A0%B7%E5%BC%8F%20(3).png" alt="fankekeke" /></p>
+<div align="center"><img align="center" src="./assets/chat_qr_code.png" alt="fankekeke" width=250 /></div>
+
+<p><img align="center" src="./assets/wechat_group.png" alt="fankekeke" /></p>
+
+**感谢查看**
